@@ -17,7 +17,7 @@ CREATE TABLE account(
   email VARCHAR(255) NOT NULL,
   phone VARCHAR(20) NOT NULL,
   bdate DATE NOT NULL,
-  age INTERVAL DEFAULT (AGE(CURRENT_DATE, bdate)),
+  age INTEGER NOT NULL;
   weight FLOAT NOT NULL,
   height FLOAT NOT NULL,
   bmi FLOAT DEFAULT (weight / POWER((height / 100),2)),
@@ -65,7 +65,7 @@ CREATE TABLE ratings (
     rating_id SERIAL PRIMARY KEY,
     personal_trainer_id INT NOT NULL,
     user_id INT NOT NULL,
-    rating FLOAT default (rating_sum / rate_count),
+    rating FLOAT,
     rating_sum INTEGER default 0,
     rate_count INTEGER default 0,
     comment TEXT,
