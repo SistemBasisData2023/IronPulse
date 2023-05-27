@@ -17,10 +17,10 @@ CREATE TABLE account(
   email VARCHAR(255) NOT NULL,
   phone VARCHAR(20) NOT NULL,
   bdate DATE NOT NULL,
-  age INTEGER NOT NULL;
+  age INTEGER NOT NULL,
   weight FLOAT NOT NULL,
   height FLOAT NOT NULL,
-  bmi FLOAT DEFAULT (weight / POWER((height / 100),2)),
+  bmi FLOAT,
   gender gender_enum NOT NULL,
   admin_priv BOOLEAN NOT NULL,
   accountimg_url text
