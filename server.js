@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const express = require('express')
 const app = express()
 const  { Client }  = require('pg')
@@ -317,4 +318,3 @@ app.delete('/delete_personal_trainers',(req,res)=>{
 app.listen(3200,()=>{
     console.log('Server berjalan pada port 3200')
 })
-  
