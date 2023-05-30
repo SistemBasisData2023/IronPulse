@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const express = require('express')
 const app = express()
 const  { Client }  = require('pg')
@@ -287,33 +286,19 @@ app.delete('/delete_class',(req,res)=>{
   })
 })
 
-// Menghapus values di personal trainers bermasalah 
-app.delete('/delete_personal_trainers',(req,res)=>{
-  const { name } = req.body
-  const { rating_id } = req.body
-  db.query(`DELETE FROM ratings WHERE rating_id=${rating_id}`,(err)=>{
-      if(err){
-          console.log(err)
-          return
-      }
-      res.send(`Data dengan rating_id ${rating_id} berhasil dihapus`)
+app.delete('/delete_ratings',(req,res)=>{
+  const { personal_trainer_id } = req.body;
+
+  db.query(`DELETE FROM ratings WHERE personal_trainer_id = ${personal_trainer_id}; 
+            DELETE FROM personal_trainers WHERE personal_trainer_id = ${personal_trainer_id};`, (err) => {
+    if(err){
+      console.log(err);
+      res.status(500).send('Terjadi kesalahan dalam menghapus data.');
+      return;
+    }
+    res.send(`Data dengan personal trainer id ${personal_trainer_id} berhasil dihapus.`);
   })
-
-  db.query(`DELETE FROM personal_trainers WHERE name=${name}`,(err)=>{})
-  
 })
-
-// // Menghapus values di ratings
-// app.delete('/delete_ratings',(req,res)=>{
-//   const { rating_id } = req.body
-//   db.query(`DELETE FROM ratings WHERE rating_id=${rating_id}`,(err)=>{
-//       if(err){
-//           console.log(err)
-//           return
-//       }
-//       res.send(`Data dengan rating_id ${rating_id} berhasil dihapus`)
-//   })
-// })
 
 app.listen(3200,()=>{
     console.log('Server berjalan pada port 3200')
