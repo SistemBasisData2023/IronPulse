@@ -1,3 +1,4 @@
+//////////////////////////////////////////// package ////////////////////////////////////////////
 const express = require('express')
 const app = express()
 const  { Client }  = require('pg')
@@ -8,7 +9,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const { hash } = require('bcrypt');
 
-
+//////////////////////////////////////////// koneksi db neon ////////////////////////////////////////////
 const db = new Client({
     host    : 'ep-polished-water-013849.ap-southeast-1.aws.neon.tech',
     database: 'Iron_pulse_fitness',
@@ -27,6 +28,9 @@ db.connect((err)=>{
     }
     console.log('Database Iron Pulse Fitness berhasil terkoneksi..')
 })
+
+
+//////////////////////////////////////////// account ////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///berhasil login
@@ -175,9 +179,59 @@ app.get('/check_all_account', (req, res) => {
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Server dan control server
+///Berhasil mengupdate account berdasarkan user_id
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+app.put('/change_account', (req, res) => {
+    const { user_id,name, email,pass,phone, bdate,weight, height,bmi,gender, admin_priv, accountimg_url } = req.body;
+    db.query(`UPDATE account 
+      SET user_id='${user_id}',
+      name='${name}',
+      email='${email}',
+      pass ='${pass}',  
+      phone='${phone}',
+      bdate='${bdate}',  
+      weight='${weight}',
+      height='${height}',
+      bmi='${bmi}',
+      gender='${gender}',
+      admin_priv='${admin_priv}',
+      accountimg_url='${accountimg_url}' WHERE user_id=${user_id};`,(err)=>{
+
+  if(err){
+    console.log(err)
+    res.send('Data dengan email ${email} gagal diupdate');
+    return
+  }
+    res.send(`Data dengan email ${email} berhasil diupdate`)
+  })
+})
+
+//////////////////////////////////////////// personal trainers ////////////////////////////////////////////
+//1. view semua personal trainer
+//2. menambahkan personal trainer
+//3. menghapus personal trainer
+//4. mengubah salah atribut di personal trainer
+
+////////////////////////////////////////////      bookings      ////////////////////////////////////////////
+//1. view semua bookings
+//2. menambahkan bookings
+//3. menghapus bookings
+//4. mengubah salah atribut di bookings
+
+////////////////////////////////////////////      class        ////////////////////////////////////////////
+//1. view semua class
+//2. menambahkan class
+//3. menghapus class
+//4. mengubah salah atribut di class
+
+////////////////////////////////////////////      ratings      ////////////////////////////////////////////
+//1. menambahkan ratings
+//2. mengubah ratings
+//3. menghapus ratings 
+
+
+////////////////////////////////////////////      port server   ////////////////////////////////////////////
 app.listen(3200,()=>{
     console.log('Server berjalan pada port 3200')
 })
