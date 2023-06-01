@@ -29,64 +29,43 @@ db.connect((err)=>{
     console.log('Database Iron Pulse Fitness berhasil terkoneksi..')
 })
 
+app.use(
+    session({
+        secret: 'secret',
+        saveUninitialized: false,
+        resave: false
+    })
+);
 
 //////////////////////////////////////////// account ////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///berhasil login
+///Berhasil melihat semua account
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.post('/login', async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.pass;
-
-  if (email && password) {
-    const query = `SELECT email, pass FROM account WHERE email = '${email}';`;
-
-    db.query(query, (err, results) => {
-      if (err) {
-        res.status(500).send('Internal Server Error');
-        return;
-      }
-
-      if (results.rowCount < 1) {
-        res.status(401).send('Invalid email');
-      } else {
-        const storedPassword = results.rows[0].pass;
-
-        bcrypt.compare(password, storedPassword, (err, result) => {
-          if (err) {
-            res.status(500).send('Internal Server Error');
-            return;
-          }
-
-          if (result) {
-            // Passwords match, login successful
-            res.status(200).send('Login successful');
-          } else {
-            // Passwords don't match
-            res.status(401).send('Invalid password');
-          }
-        });
-      }
-    });
-  } else {
-    res.status(400).send('Invalid request');
-  }
-});
+app.get('/check_all_account', (req, res) => {
+  db.query('SELECT * FROM account', (err, accountResults) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send({account: accountResults.rows});
+})
+})
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///berhasil register
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post('/register', (req, res) => {
-  let temp = {};
+  temp = req.session;
 
   temp.name = req.body.name;
   temp.email = req.body.email;
   temp.pass = req.body.pass;
   temp.phone = req.body.phone;
   temp.bdate = req.body.bdate;
+  //age INTERVAL DEFAULT (AGE(CURRENT_DATE, bdate)),
   temp.weight = req.body.weight;
   temp.height = req.body.height;
   temp.bmi = req.body.bmi;
@@ -110,7 +89,7 @@ app.post('/register', (req, res) => {
             console.log(err);
             res.end('Error!!');
           } else {
-            res.end('Register berhasi !');
+            res.end('Register berhasil !');
           }
         });
       }
@@ -121,18 +100,75 @@ app.post('/register', (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///berhasil login member
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post('/login', async (req, res) => {
+  temp = req.session;
+  temp.email = req.body.email;
+  temp.pass = req.body.pass;
+  // const email = req.body.email;
+  // const password = req.body.pass;
+
+  if (temp.email !== undefined && temp.pass !== undefined) {
+    const query = `SELECT email, pass,admin_priv  FROM account WHERE email = '${temp.email}';`;
+
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      if (results.rowCount < 1) {
+        res.status(401).send('Invalid email');
+      } else {
+        const storedPassword = results.rows[0].pass;
+        const adminPriv  = results.rows[0].admin_priv || false;
+
+        bcrypt.compare(temp.pass, storedPassword, (err, result) => {
+          if (err) {
+            res.status(500).send('Internal Server Error');
+            return;
+          }
+
+          if (result) {
+            if (adminPriv) {
+              res.status(200).json({
+                message: 'Login successful (Admin)',
+                admin_priv: true
+              });
+            } else {
+              res.status(200).json({
+                message: 'Login successful (member)',
+                admin_priv: false
+              });
+            }
+          } else {
+            res.status(401).send('Invalid password');
+          }
+        });
+      }
+    });
+  } else {
+    res.status(400).send('Invalid request');
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Berhasil check_account
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get('/check_account', (req, res) => {
-  const email = req.query.email ?? ''; // Set a default empty string if email is undefined or null
+  temp = req.session;
+  temp.email = req.body.email;
+  temp.email = req.query.email ?? ''; 
 
-  if (email.length === 0) {
+  if (temp.email.length === 0) {
     res.status(400).json({ message: 'Email is required' });
     return;
   }
 
-  const query = `SELECT email, pass FROM account WHERE email = '${email}';`;
+  const query = `SELECT * FROM account WHERE email = '${temp.email}';`;
   db.query(query, (err, results) => {
     if (err) {
       console.log(err);
@@ -141,8 +177,8 @@ app.get('/check_account', (req, res) => {
     }
 
     if (results.rowCount > 0) {
-      const account = results.rows[0];
-      res.status(200).json(account);
+      temp.account = results.rows[0];
+      res.status(200).json(temp.account);
     } else {
       res.status(404).json({ message: 'Account tidak dapat ditemukan' });
     }
@@ -165,45 +201,45 @@ app.delete('/delete_account',(req,res)=>{
 })
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///Berhasil melihat semua account
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-app.get('/check_all_account', (req, res) => {
-    db.query('SELECT * FROM account', (err, accountResults) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      res.send({account: accountResults.rows});
-  })
-})
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Berhasil mengupdate account berdasarkan user_id
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 app.put('/change_account', (req, res) => {
-    const { user_id,name, email,pass,phone, bdate,weight, height,bmi,gender, admin_priv, accountimg_url } = req.body;
+    temp = req.session;
+
+    temp.user_id = req.body.user_id;
+    temp.name = req.body.name;
+    temp.email = req.body.email;
+    temp.pass = req.body.pass;
+    temp.phone = req.body.phone;
+    temp.bdate = req.body.bdate;
+    //age INTERVAL DEFAULT (AGE(CURRENT_DATE, bdate)),
+    temp.weight = req.body.weight;
+    temp.height = req.body.height;
+    temp.bmi = req.body.bmi;
+    temp.gender = req.body.gender;
+    temp.admin_priv = req.body.admin_priv;
+    temp.accountimg_url = req.body.accountimg_url;
+
     db.query(`UPDATE account 
-      SET user_id='${user_id}',
-      name='${name}',
-      email='${email}',
-      pass ='${pass}',  
-      phone='${phone}',
-      bdate='${bdate}',  
-      weight='${weight}',
-      height='${height}',
-      bmi='${bmi}',
-      gender='${gender}',
-      admin_priv='${admin_priv}',
-      accountimg_url='${accountimg_url}' WHERE user_id=${user_id};`,(err)=>{
+      SET user_id='${temp.user_id}',
+      name='${temp.name}',
+      email='${temp.email}',
+      pass ='${temp.pass}',  
+      phone='${temp.phone}',
+      bdate='${temp.bdate}',  
+      weight='${temp.weight}',
+      height='${temp.height}',
+      bmi='${temp.bmi}',
+      gender='${temp.gender}',
+      admin_priv='${temp.admin_priv}',
+      accountimg_url='${temp.accountimg_url}' WHERE user_id=${temp.user_id};`,(err)=>{
 
   if(err){
     console.log(err)
-    res.send('Data dengan email ${email} gagal diupdate');
+    res.send('Data dengan email ${temp.email} gagal diupdate');
     return
   }
-    res.send(`Data dengan email ${email} berhasil diupdate`)
+    res.send(`Data dengan email ${temp.email} berhasil diupdate`)
   })
 })
 
@@ -214,10 +250,115 @@ app.put('/change_account', (req, res) => {
 //4. mengubah salah atribut di personal trainer
 
 ////////////////////////////////////////////      bookings      ////////////////////////////////////////////
-//1. view semua bookings
-//2. menambahkan bookings
-//3. menghapus bookings
-//4. mengubah salah atribut di bookings
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//berhasil view semua bookings 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.get('/check_all_booking', (req, res) => {
+  db.query('SELECT * FROM bookings', (err, bookingsResults) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send({bookigs: bookingsResults.rows});
+})
+})
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//berhasil menambahkan values dalam bookings table
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post('/add_booking', (req, res) => {
+    const {booking_id,start_time, end_time, class_id, user_id, booking_status } = req.body;
+    db.query(`INSERT INTO bookings (booking_id,start_time, end_time, class_id, user_id, booking_status)
+      VALUES ('${booking_id}','${start_time}', '${end_time}', ${class_id}, ${user_id}, '${booking_status}');`, (err) => {
+      if (err) {
+        console.log(err);
+        // res.send('Data gagal diinput ke table bookings.');
+        return;
+      }
+    });
+    res.send('Data berhasil diinput ke table bookings.');
+})
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//berhasil bookings 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post('/booking', async (req, res) => {
+  const booking_id = req.body.booking_id;
+
+  if (booking_id > 0) {
+    const query = `SELECT booking_id FROM bookings WHERE booking_id = '${booking_id}';`; //user_id
+
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      if (results.rowCount < 1) {
+        res.status(401).send('Invalid booking id');
+      }
+
+      else {
+
+          if (err) {
+            res.status(500).send('Internal Server Error');
+            return;
+          }
+
+          if (results) {
+            res.status(200).send('booking id successful');
+          } else {
+            res.status(401).send('Invalid booking id');
+          }
+      }
+    });
+  } else {
+    res.status(400).send('Invalid request');
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// berhasil delete bookings berdasarkan booking_id
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.delete('/delete_booking',(req,res)=>{
+  const { booking_id } = req.body
+  db.query(`DELETE FROM bookings WHERE booking_id=${booking_id}`,(err)=>{
+      if(err){
+          console.log(err)
+          return
+      }
+      res.send(`Data dengan booking_id ${booking_id} berhasil dihapus`)
+  })
+})
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//berhasil Merubah value di bookings (error)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.put('/update_booking', (req, res) => {
+    const {booking_id,start_time, end_time, class_id, user_id, booking_status } = req.body;
+        db.query(`UPDATE bookings 
+            SET booking_id = '${booking_id}', 
+            start_time='${start_time}',
+            end_time='${end_time}',
+            class_id='${class_id}', 
+            user_id='${user_id}',
+            booking_status='${booking_status}' WHERE booking_id=${booking_id};`,(err)=>{
+
+      if(err){
+          console.log(err)
+          res.send('Data dengan booking id ${booking_id} gagal diupdate');
+          return
+      }else{
+      res.send(`Data dengan booking id ${booking_id} berhasil diupdate`)
+      }
+  })
+})
 
 ////////////////////////////////////////////      class        ////////////////////////////////////////////
 //1. view semua class
@@ -230,8 +371,8 @@ app.put('/change_account', (req, res) => {
 //2. mengubah ratings
 //3. menghapus ratings 
 
-
 ////////////////////////////////////////////      port server   ////////////////////////////////////////////
+
 app.listen(3200,()=>{
     console.log('Server berjalan pada port 3200')
 })
