@@ -100,10 +100,10 @@ app.post('/register', (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///berhasil login member
+///berhasil login admin
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.post('/login', async (req, res) => {
+app.post('/login_admin', async (req, res) => {
   temp = req.session;
   temp.email = req.body.email;
   temp.pass = req.body.pass;
@@ -132,15 +132,68 @@ app.post('/login', async (req, res) => {
           }
 
           if (result) {
-            if (adminPriv) {
+            if (adminPriv == true) {
               res.status(200).json({
-                message: 'Login successful (Admin)',
-                admin_priv: true
+                message: 'Login successful (Admin)'
               });
+
             } else {
+              res.status(401).json({
+                message: 'Invalid account'
+              });
+            }
+          } else {
+            res.status(401).send('Invalid password');
+          }
+        });
+      }
+    });
+  } else {
+    res.status(400).send('Invalid request');
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///berhasil login member
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.post('/login_member', async (req, res) => {
+  temp = req.session;
+  temp.email = req.body.email;
+  temp.pass = req.body.pass;
+  // const email = req.body.email;
+  // const password = req.body.pass;
+
+  if (temp.email !== undefined && temp.pass !== undefined) {
+    const query = `SELECT email, pass,admin_priv  FROM account WHERE email = '${temp.email}';`;
+
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      if (results.rowCount < 1) {
+        res.status(401).send('Invalid email');
+      } else {
+        const storedPassword = results.rows[0].pass;
+        const adminPriv  = results.rows[0].admin_priv || false;
+
+        bcrypt.compare(temp.pass, storedPassword, (err, result) => {
+          if (err) {
+            res.status(500).send('Internal Server Error');
+            return;
+          }
+
+          if (result) {
+            if (adminPriv == false) {
               res.status(200).json({
-                message: 'Login successful (member)',
-                admin_priv: false
+                message: 'Login successful (member)'
+              });
+
+            } else {
+              res.status(401).json({
+                message: 'Invalid account'
               });
             }
           } else {
