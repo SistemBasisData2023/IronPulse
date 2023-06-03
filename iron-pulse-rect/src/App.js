@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import LoginPage from "./pages/login-page";
 import RegisterPage from "./pages/register-page";
+import HomePageUser from "./pages/home-page-user";
 import { useEffect } from "react";
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/register-page" element={<RegisterPage />} />
+      <Route path="/home-page-user" element={<HomePageUser />} />
     </Routes>
   );
 }

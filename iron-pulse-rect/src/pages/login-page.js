@@ -5,13 +5,12 @@ import { useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const navigate = useNavigate();
 
-  function handleClick() {
-    // Perform actions when the button is clicked
-    console.log("Button clicked!");
-  }
+  const onLoginClick = useCallback(() => {
+    navigate("/home-page-user");
+  }, [navigate]);
   
 
-  const onRegisterTextClick = useCallback(() => {
+  const onRegisterClick = useCallback(() => {
     navigate("/register-page");
   }, [navigate]);
 
@@ -26,7 +25,7 @@ const LoginPage = () => {
       <div className="absolute top-[42px] right-[190.6px] w-[252.09px] h-9 flex flex-row items-center justify-start gap-[14px] text-[22.98px]">
         <div
           className="relative font-medium flex items-center w-[97.09px] h-[17.81px] shrink-0 cursor-pointer"
-          onClick={onRegisterTextClick}
+          onClick={onRegisterClick}
         >
           Register
         </div>
@@ -99,7 +98,7 @@ const LoginPage = () => {
         </div>
         <button
           className="cursor-pointer [border:none] p-0 bg-white rounded-31xl w-[503px] h-[52px] flex flex-col items-center justify-center"
-          onClick={handleClick}
+          onClick={onLoginClick}
 >
           <div className="relative text-11xl font-semibold font-urbanist text-black text-center flex items-center justify-center w-[109.15px] h-[26.58px] shrink-0">
             Login

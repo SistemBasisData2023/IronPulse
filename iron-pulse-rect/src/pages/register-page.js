@@ -1,12 +1,17 @@
+import { useCallback } from "react";
 import { TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 const RegisterPage = () => {
 
-  function handleClick() {
-    // Perform actions when the button is clicked
-    console.log("Button clicked!");
-  }
+  const navigate = useNavigate();
+
+  //Navigate to login page whet onRegisterClick is pressed
+  const onRegisterClick = useCallback(() => {
+    navigate("/");
+    }, [navigate]);
+
 
   return (
     <div className="relative bg-white w-full h-[1186px] overflow-hidden text-center text-[53.77px] text-white font-urbanist">
@@ -296,7 +301,7 @@ const RegisterPage = () => {
           {/* ... */}
           <button
           className="cursor-pointer [border:none] p-0 bg-white rounded-31xl w-[503px] h-[52px] flex flex-col items-center justify-center mt-5"
-          onClick={handleClick}
+          onClick={onRegisterClick}
 >
           <div className="relative text-11xl font-semibold font-urbanist text-black text-center flex items-center justify-center w-[109.15px] h-[26.58px] shrink-0">
             Register
