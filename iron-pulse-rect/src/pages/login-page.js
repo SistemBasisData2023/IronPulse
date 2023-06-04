@@ -6,7 +6,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const onLoginClick = useCallback(() => {
-    navigate("/home-page-user");
+    navigate("/home");
   }, [navigate]);
   
 
