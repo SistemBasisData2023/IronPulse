@@ -298,10 +298,51 @@ app.put('/change_account', (req, res) => {
 })
 
 //////////////////////////////////////////// personal trainers ////////////////////////////////////////////
+
 //1. view semua personal trainer
+app.get('/check_all_pt', (req, res) => {
+  db.query('SELECT * FROM personal_trainers', (err, ptResults) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send({personal_trainers : ptResults.rows});
+})
+})
+
 //2. menambahkan personal trainer
-//3. menghapus personal trainer
-//4. mengubah salah atribut di personal trainer
+app.post('/insert_pt', (req, res) => {
+    const { personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count} = req.body;
+    db.query(`INSERT INTO personal_trainers (personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count)
+      VALUES ('${personal_trainer_id}','${name}', '${gender}', '${accountimg_url}','${rating_sum}','${rate_count}');`, (err) => {
+      if (err) {
+        console.log(err);
+        res.send('Gagal memasukkan data ke tabel personal_trainers.');
+        return;
+      }
+    });
+    res.send('Data berhasil diinput personal_trainers.');
+})
+
+//3. mengubah salah atribut di personal trainer
+app.put('/update_pt', (req, res) => {
+  const { personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count } = req.body;
+  db.query(`UPDATE personal_trainers 
+            SET personal_trainer_id='${personal_trainer_id}',
+            name='${name}',
+            gender='${gender}', 
+            accountimg_url='${accountimg_url}',
+            rating_sum='${rating_sum}', 
+            rate_count='${rate_count}' WHERE personal_trainer_id=${personal_trainer_id};`,(err)=>{
+
+      if(err){
+          console.log(err)
+          res.send('Data dengan personal trainer id ${personal_trainer_id} gagal diupdate');
+          return
+      }
+      res.send(`Data dengan personal trainer id ${personal_trainer_id} berhasil diupdate`)
+  })
+})
 
 ////////////////////////////////////////////      bookings      ////////////////////////////////////////////
 
@@ -415,10 +456,71 @@ app.put('/update_booking', (req, res) => {
 })
 
 ////////////////////////////////////////////      class        ////////////////////////////////////////////
+
 //1. view semua class
-//2. menambahkan class
+app.get('/check_all_class', (req, res) => {
+  db.query('SELECT * FROM class', (err, classResults) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send({class: classResults.rows});
+  })
+})
+
+//2.Memilih class
+app.post('/class', async (req, res) => {
+  const class_id = req.body.class_id;
+
+  if (class_id > 0) {
+    const query = `SELECT class_id FROM class WHERE class_id = '${class_id}';`; //user_id
+
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      if (results.rowCount < 1) {
+        res.status(401).send('Invalid class id');
+      }
+
+      else {
+
+          if (err) {
+            res.status(500).send('Internal Server Error');
+            return;
+          }
+
+          if (results) {
+            res.status(200).send('class id successful');
+          } else {
+            res.status(401).send('Invalid class id');
+          }
+      }
+    });
+  } else {
+    res.status(400).send('Invalid request');
+  }
+});
+
+
 //3. menghapus class
+app.delete('/delete_class',(req,res)=>{
+
+  const { class_id } = req.body;
+  db.query(`DELETE FROM class WHERE class_id = ${class_id}; `, (err) => {
+    if(err){
+      console.log(err);
+      res.status(500).send('Terjadi kesalahan dalam menghapus data.');
+      return;
+    }
+    res.send(`Data dengan class_id ${class_id} berhasil dihapus.`);
+  })
+})
+
 //4. mengubah salah atribut di class
+
 
 ////////////////////////////////////////////      ratings      ////////////////////////////////////////////
 
