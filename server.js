@@ -65,25 +65,25 @@ app.post('/register', (req, res) => {
   temp.pass = req.body.pass;
   temp.phone = req.body.phone;
   temp.bdate = req.body.bdate;
-  //age INTERVAL DEFAULT (AGE(CURRENT_DATE, bdate)),
   temp.weight = req.body.weight;
   temp.height = req.body.height;
   temp.bmi = req.body.bmi;
   temp.gender = req.body.gender;
   temp.admin_priv = req.body.admin_priv;
   temp.accountimg_url = req.body.accountimg_url;
+  temp.age = req.body.age;
 
   if (
     temp.pass !== undefined && temp.name !== undefined && temp.email !== undefined && temp.phone !== undefined &&temp.bdate !== undefined&&
-    temp.weight !== undefined && temp.height !== undefined && temp.bmi !== undefined && temp.gender !== undefined && temp.admin_priv !== undefined && temp.accountimg_url !== undefined &&
+    temp.weight !== undefined && temp.height !== undefined && temp.bmi !== undefined && temp.gender !== undefined && temp.admin_priv !== undefined && temp.accountimg_url !== undefined && temp.age !== undefined &&
     temp.pass.length > 0 && temp.name.length > 0 && temp.email.length > 0 && temp.phone.length > 0 &&temp.bdate.length > 0 &&
-    temp.weight.length > 0 && temp.height.length > 0 && temp.bmi.length > 0 && temp.gender.length > 0 && temp.admin_priv.length > 0 && temp.accountimg_url.length > 0
+    temp.weight.length > 0 && temp.height.length > 0 && temp.bmi.length > 0 && temp.gender.length > 0 && temp.admin_priv.length > 0 && temp.accountimg_url.length > 0 && temp.age.length > 0 
   ) {
     bcrypt.hash(temp.pass, 10, (err, hash) => {
       if (err) {
         res.end('Error!!');
       } else {
-        const query = `INSERT INTO account (name, email, pass, phone,bdate ,weight, height,bmi,gender, admin_priv,accountimg_url) VALUES ('${temp.name}', '${temp.email}', '${hash}', '${temp.phone}','${temp.bdate}' ,'${temp.weight}','${temp.height}','${temp.bmi}' ,'${temp.gender}', '${temp.admin_priv}','${temp.accountimg_url}')`;
+        const query = `INSERT INTO account (name, email, pass, phone,bdate ,weight, height,bmi,gender, admin_priv,accountimg_url,age) VALUES ('${temp.name}', '${temp.email}', '${hash}', '${temp.phone}','${temp.bdate}' ,'${temp.weight}','${temp.height}','${temp.bmi}' ,'${temp.gender}', '${temp.admin_priv}','${temp.accountimg_url}','${temp.age}')`;
         db.query(query, (err, results) => {
           if (err) {
             console.log(err);
@@ -102,7 +102,6 @@ app.post('/register', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///berhasil login admin
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 app.post('/login_admin', async (req, res) => {
   temp = req.session;
   temp.email = req.body.email;
@@ -265,13 +264,14 @@ app.put('/change_account', (req, res) => {
     temp.pass = req.body.pass;
     temp.phone = req.body.phone;
     temp.bdate = req.body.bdate;
-    //age INTERVAL DEFAULT (AGE(CURRENT_DATE, bdate)),
     temp.weight = req.body.weight;
     temp.height = req.body.height;
     temp.bmi = req.body.bmi;
     temp.gender = req.body.gender;
     temp.admin_priv = req.body.admin_priv;
     temp.accountimg_url = req.body.accountimg_url;
+    temp.age = req.body.age;
+
 
     db.query(`UPDATE account 
       SET user_id='${temp.user_id}',
@@ -285,7 +285,8 @@ app.put('/change_account', (req, res) => {
       bmi='${temp.bmi}',
       gender='${temp.gender}',
       admin_priv='${temp.admin_priv}',
-      accountimg_url='${temp.accountimg_url}' WHERE user_id=${temp.user_id};`,(err)=>{
+      accountimg_url='${temp.accountimg_url}' ,
+      age ='${temp.age}' WHERE user_id=${temp.user_id};`,(err)=>{
 
   if(err){
     console.log(err)
@@ -297,10 +298,51 @@ app.put('/change_account', (req, res) => {
 })
 
 //////////////////////////////////////////// personal trainers ////////////////////////////////////////////
+
 //1. view semua personal trainer
+app.get('/check_all_pt', (req, res) => {
+  db.query('SELECT * FROM personal_trainers', (err, ptResults) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send({personal_trainers : ptResults.rows});
+})
+})
+
 //2. menambahkan personal trainer
-//3. menghapus personal trainer
-//4. mengubah salah atribut di personal trainer
+app.post('/insert_pt', (req, res) => {
+    const { personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count} = req.body;
+    db.query(`INSERT INTO personal_trainers (personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count)
+      VALUES ('${personal_trainer_id}','${name}', '${gender}', '${accountimg_url}','${rating_sum}','${rate_count}');`, (err) => {
+      if (err) {
+        console.log(err);
+        res.send('Gagal memasukkan data ke tabel personal_trainers.');
+        return;
+      }
+    });
+    res.send('Data berhasil diinput personal_trainers.');
+})
+
+//3. mengubah salah atribut di personal trainer
+app.put('/update_pt', (req, res) => {
+  const { personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count } = req.body;
+  db.query(`UPDATE personal_trainers 
+            SET personal_trainer_id='${personal_trainer_id}',
+            name='${name}',
+            gender='${gender}', 
+            accountimg_url='${accountimg_url}',
+            rating_sum='${rating_sum}', 
+            rate_count='${rate_count}' WHERE personal_trainer_id=${personal_trainer_id};`,(err)=>{
+
+      if(err){
+          console.log(err)
+          res.send('Data dengan personal trainer id ${personal_trainer_id} gagal diupdate');
+          return
+      }
+      res.send(`Data dengan personal trainer id ${personal_trainer_id} berhasil diupdate`)
+  })
+})
 
 ////////////////////////////////////////////      bookings      ////////////////////////////////////////////
 
@@ -414,15 +456,130 @@ app.put('/update_booking', (req, res) => {
 })
 
 ////////////////////////////////////////////      class        ////////////////////////////////////////////
+
 //1. view semua class
-//2. menambahkan class
+app.get('/check_all_class', (req, res) => {
+  db.query('SELECT * FROM class', (err, classResults) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send({class: classResults.rows});
+  })
+})
+
+//2.Memilih class
+app.post('/class', async (req, res) => {
+  const class_id = req.body.class_id;
+
+  if (class_id > 0) {
+    const query = `SELECT class_id FROM class WHERE class_id = '${class_id}';`; //user_id
+
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      if (results.rowCount < 1) {
+        res.status(401).send('Invalid class id');
+      }
+
+      else {
+
+          if (err) {
+            res.status(500).send('Internal Server Error');
+            return;
+          }
+
+          if (results) {
+            res.status(200).send('class id successful');
+          } else {
+            res.status(401).send('Invalid class id');
+          }
+      }
+    });
+  } else {
+    res.status(400).send('Invalid request');
+  }
+});
+
+
 //3. menghapus class
+app.delete('/delete_class',(req,res)=>{
+
+  const { class_id } = req.body;
+  db.query(`DELETE FROM class WHERE class_id = ${class_id}; `, (err) => {
+    if(err){
+      console.log(err);
+      res.status(500).send('Terjadi kesalahan dalam menghapus data.');
+      return;
+    }
+    res.send(`Data dengan class_id ${class_id} berhasil dihapus.`);
+  })
+})
+
 //4. mengubah salah atribut di class
 
+
 ////////////////////////////////////////////      ratings      ////////////////////////////////////////////
+
 //1. menambahkan ratings
+app.post('/insert_ratings', (req, res) => {
+    const {rating_id,personal_trainer_id, user_id, rating,comment} = req.body;
+    db.query(`INSERT INTO ratings (rating_id,personal_trainer_id, user_id, rating,comment)
+            VALUES (${rating_id},${personal_trainer_id}, ${user_id},${rating} ,'${comment}');`, (err) => {
+      if (err) {
+        console.log(err);
+        res.send('Gagal memasukkan data ke tabel ratings.');
+        return;
+      }
+    });
+    res.send('Data berhasil diinput ke table ratings.');
+})
+
 //2. mengubah ratings
+app.put('/update_ratings', (req, res) => {
+  const { rating_id,personal_trainer_id, user_id,rating,comment} = req.body;
+  db.query(`UPDATE ratings SET rating_id='${rating_id}',
+            personal_trainer_id='${personal_trainer_id}',
+            user_id='${user_id}', 
+            rating='${rating}', 
+            comment='${comment}' WHERE rating_id=${rating_id};`,(err)=>{
+      if(err){
+          console.log(err)
+          res.send('Data dengan rating id ${rating_id} gagal diupdate');
+          return
+      }
+      res.send(`Data dengan rating id ${rating_id} berhasil diupdate`)
+  })
+})
+
+
 //3. menghapus ratings 
+app.delete('/delete_ratings',(req,res)=>{
+
+  const { rating_id } = req.body;
+  db.query(`DELETE FROM ratings WHERE rating_id = ${rating_id}; `, (err) => {
+    if(err){
+      console.log(err);
+      res.status(500).send('Terjadi kesalahan dalam menghapus data.');
+      return;
+    }
+    res.send(`Data dengan rating_id ${rating_id} berhasil dihapus.`);
+  })
+})
+
+//4. Melihat semua rating
+app.get('/check_all_ratings', (req, res) => {
+  db.query('SELECT * FROM ratings', (err, ratingsResults) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send({ratings: ratingsResults.rows});
+})
+})
 
 ////////////////////////////////////////////      port server   ////////////////////////////////////////////
 
