@@ -1,0 +1,26 @@
+/* CSS for WorkoutSelect component */
+
+/* Center the pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Style the pagination links */
+  .pagination span {
+    display: inline-block;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+  
+  /* Style the active page */
+  .pagination .active_page {
+    font-weight: bold;
+  }
+  
+  /* Add margin to the cards */
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+  

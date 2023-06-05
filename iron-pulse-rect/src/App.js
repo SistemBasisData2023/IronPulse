@@ -8,6 +8,7 @@ import LoginPage from "./pages/login-page";
 import RegisterPage from "./pages/register-page";
 import HomePageUser from "./pages/home-page-user";
 import WorkoutSelect from "./pages/workout-select.js";
+import Bookings from "./pages/bookings";
 import { useEffect } from "react";
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
       <Route path="/register-page" element={<RegisterPage />} />
       <Route path="/home" element={<HomePageUser />} />
       <Route path="/workout" element={<WorkoutSelect />} />
+      <Route path="/bookings" element={<Bookings />} />
     </Routes>
 
     //test using tailwind

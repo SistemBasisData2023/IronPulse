@@ -35,7 +35,7 @@ const HomePage1 = () => {
         </b>
       </div>
       
-      <div className="absolute top-[715px] left-[calc(50%_-_835px)] w-[1670px] flex flex-row items-center justify-between text-xl">
+      <div className="absolute top-[715px] left-[calc(50%_-_835px)] w-[1670px] flex flex-row items-center justify-between text-xl p-5">
 
         
         <div className="relative rounded-2xl shadow-[13px_12px_42px_rgba(0,_0,_0,_0.4)] w-[251px] h-[503px]">
