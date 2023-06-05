@@ -9,6 +9,15 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const { hash } = require('bcrypt');
 
+
+const cors = require('cors');
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
+
 //////////////////////////////////////////// koneksi db neon ////////////////////////////////////////////
 const db = new Client({
     host    : 'ep-polished-water-013849.ap-southeast-1.aws.neon.tech',
@@ -96,6 +105,7 @@ app.post('/register', (req, res) => {
     });
   } else {
     res.end('empty');
+    console.log("kosong")
   }
 });
 
