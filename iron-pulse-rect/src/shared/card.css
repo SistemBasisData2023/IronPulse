@@ -67,6 +67,30 @@
     justify-content: space-between;
     gap: 20px;
   }
+
+  .modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    max-width: 400px;
+    max-height: 400px;
+    overflow: auto;
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+  }
   
   /* Media Query for four cards per row */
   @media (min-width: 576px) {

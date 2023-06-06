@@ -18,31 +18,31 @@ const Bookings = () => {
 
   return (
     <>
-      <Navbar />
-      <CoverImage title={'Bookings'} />
-      <section className="bg-white h-screen">
-        <Container className="card-container">
-          {bookingData
-            .slice(page * 2, (page + 1) * 2)
-            .map((bookings) => (
-              <Card bookings={bookings} key={bookings.id} />
-            ))}
-        </Container>
-        <Container>
-          <div className="pagination d-flex align-items-center justify-content-center mt-4">
-            {[...Array(pageCount).keys()].map((number) => (
-              <span
-                key={number}
-                onClick={() => setPage(number)}
-                className={page === number ? 'active_page' : ""}
-              >
-                {number + 1}
-              </span>
-            ))}
-          </div>
-        </Container>
-      </section>
-    </>
+    <Navbar />
+    <CoverImage title={'Bookings'} />
+    <section className="bg-white h-screen">
+      <Container className="card-container">
+        {bookingData
+          .slice(page * 2, (page + 1) * 2)
+          .map((bookings) => (
+            <Card bookings={bookings} key={bookings.id} />
+          ))}
+      </Container>
+      <Container>
+        <div className="pagination d-flex align-items-center justify-content-center mt-4">
+          {[...Array(pageCount).keys()].map((number) => (
+            <span
+              key={number}
+              onClick={() => setPage(number)}
+              className={page === number ? 'active_page' : ''}
+            >
+              {number + 1}
+            </span>
+          ))}
+        </div>
+      </Container>
+    </section>
+  </>
   );
 };
 
