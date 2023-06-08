@@ -8,7 +8,6 @@ const LoginPage = () => {
   const onLoginClick = useCallback(() => {
     navigate("/home");
   }, [navigate]);
-  
 
   const onRegisterClick = useCallback(() => {
     navigate("/register-page");
@@ -54,17 +53,17 @@ const LoginPage = () => {
               style: {
                 fontFamily: "'Urbanist', sans-serif",
                 color: "white",
-                borderBottom: "1px solid white"
+                borderBottom: "1px solid white",
               },
             }}
             InputLabelProps={{
               style: {
                 fontFamily: "'Urbanist', sans-serif",
                 color: "white",
-              }
+              },
             }}
           />
-    
+
           <TextField
             className="[border:none] bg-[transparent] relative"
             sx={{ width: 495 }}
@@ -79,16 +78,15 @@ const LoginPage = () => {
               style: {
                 fontFamily: "'Urbanist', sans-serif",
                 color: "white",
-                borderBottom: "1px solid white"
-              }
+                borderBottom: "1px solid white",
+              },
             }}
             InputLabelProps={{
               style: {
                 fontFamily: "'Urbanist', sans-serif",
-                color: "white"
-              }
+                color: "white",
+              },
             }}
-            
           />
           <img
             className="relative w-[500px] h-px hidden"
@@ -99,12 +97,11 @@ const LoginPage = () => {
         <button
           className="cursor-pointer [border:none] p-0 bg-white rounded-31xl w-[503px] h-[52px] flex flex-col items-center justify-center"
           onClick={onLoginClick}
->
+        >
           <div className="relative text-11xl font-semibold font-urbanist text-black text-center flex items-center justify-center w-[109.15px] h-[26.58px] shrink-0">
             Login
           </div>
         </button>
-
       </div>
     </div>
   );

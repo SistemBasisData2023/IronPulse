@@ -2,33 +2,31 @@
 
 /* Center the pagination */
 .pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Style the pagination links */
-  .pagination span {
-    display: inline-block;
-    padding: 0.5rem;
-    cursor: pointer;
-  }
-  
-  /* Style the active page */
-  .pagination .active_page {
-    font-weight: bold;
-  }
-  
-  /* Add margin to the cards */
-  .mb-4 {
-    margin-bottom: 1.5rem;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 50px; /* Adjust the gap value to change the spacing between the cards */
-  }
-  
-  
+/* Style the pagination links */
+.pagination span {
+  display: inline-block;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* Style the active page */
+.pagination .active_page {
+  font-weight: bold;
+}
+
+/* Add margin to the cards */
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 50px; /* Adjust the gap value to change the spacing between the cards */
+}

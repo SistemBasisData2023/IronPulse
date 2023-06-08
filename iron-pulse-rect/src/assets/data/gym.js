@@ -37,7 +37,7 @@ const gym = [
     difficulty: "Easy",
     calories: 150,
     date: "2023-06-09",
-    time: "11:00 - 12:00"
+    time: "11:00 - 12:00",
   },
 ];
 

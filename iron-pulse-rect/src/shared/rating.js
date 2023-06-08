@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./Rating.css"; // Import CSS file for Rating component styles
 import TextField from "@mui/material/TextField";
 
-
 const Stars = ({ value, hoveredValue, onHover, onClick }) => {
   const stars = [1, 2, 3, 4, 5];
 
@@ -11,7 +10,9 @@ const Stars = ({ value, hoveredValue, onHover, onClick }) => {
       {stars.map((star) => (
         <button
           key={star}
-          className={`star ${star <= (hoveredValue || value) ? "gold" : "gray"}`}
+          className={`star ${
+            star <= (hoveredValue || value) ? "gold" : "gray"
+          }`}
           onClick={() => onClick(star)}
           onMouseEnter={() => onHover(star)}
         >
@@ -23,17 +24,17 @@ const Stars = ({ value, hoveredValue, onHover, onClick }) => {
 };
 
 const TextInput = ({ value, onChange }) => {
-    return (
-      <div className="text-input ">
-        <TextField
-          label="Enter your rating text"
-          value={value}
-          onChange={onChange}
-          fullWidth
-        />
-      </div>
-    );
-  };
+  return (
+    <div className="text-input ">
+      <TextField
+        label="Enter your rating text"
+        value={value}
+        onChange={onChange}
+        fullWidth
+      />
+    </div>
+  );
+};
 
 const Rating = ({ value, onRate }) => {
   const [hoveredValue, setHoveredValue] = useState(0);

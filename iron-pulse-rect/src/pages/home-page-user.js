@@ -34,10 +34,8 @@ const HomePage1 = () => {
           Choose Your Workout
         </b>
       </div>
-      
-      <div className="absolute top-[715px] left-[calc(50%_-_835px)] w-[1670px] flex flex-row items-center justify-between text-xl p-5">
 
-        
+      <div className="absolute top-[715px] left-[calc(50%_-_835px)] w-[1670px] flex flex-row items-center justify-between text-xl p-5">
         <div className="relative rounded-2xl shadow-[13px_12px_42px_rgba(0,_0,_0,_0.4)] w-[251px] h-[503px]">
           <div className="absolute h-full w-full top-[0%] right-[0%] bottom-[0%] left-[0%]" />
           <img
@@ -58,11 +56,10 @@ const HomePage1 = () => {
             sit necessitatibus veritatis sed molestiae voluptates incidunt iure
             sapiente.
           </div>
-          <button 
+          <button
             className="absolute h-[9.54%] w-[51.79%] top-[83.3%] right-[24%] bottom-[7.16%] left-[24.2%] rounded-lg bg-gold-200 flex flex-col py-0 px-[16.5px] box-border items-start justify-center text-center text-sm text-black"
             onClick={onWorkoutClick}
-            >
-            
+          >
             <div className="relative leading-[14px] uppercase font-semibold font-urbanist inline-block w-24">
               Get Started
             </div>

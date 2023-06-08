@@ -166,7 +166,8 @@ const RegisterPage = () => {
             <FormControl>
               <FormLabel
                 id="demo-radio-buttons-group-label"
-                style={{ color: "white", fontFamily: "Urbanist, sans-serif" }}>
+                style={{ color: "white", fontFamily: "Urbanist, sans-serif" }}
+              >
                 Gender
               </FormLabel>
               <RadioGroup
@@ -389,7 +390,8 @@ const RegisterPage = () => {
           {/* ... */}
           <button
             className="cursor-pointer [border:none] p-0 bg-white rounded-31xl w-[503px] h-[52px] flex flex-col items-center justify-center mt-5"
-            onClick={onRegisterClick}>
+            onClick={onRegisterClick}
+          >
             <div className="relative text-11xl font-semibold font-urbanist text-black text-center flex items-center justify-center w-[109.15px] h-[26.58px] shrink-0">
               Register
             </div>

@@ -30,7 +30,11 @@ const CardBooking = ({ bookings }) => {
         </div>
         <div className="card-rating">
           <div className="rating-container">
-            <Rating value={currentRating} readOnly={false} onRate={handleRate} />
+            <Rating
+              value={currentRating}
+              readOnly={false}
+              onRate={handleRate}
+            />
             <Button variant="contained" onClick={() => handleRate(0)}>
               Rate
             </Button>

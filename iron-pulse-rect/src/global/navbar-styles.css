@@ -1,23 +1,22 @@
 .navbar {
-    background-color: black;
-    padding-right: 188px;
-    padding-left: 188px;
-    padding-top: 100px;
-  }
-  
-  .btn-ghost {
-    background-color: transparent;
-    border: none;
-    font-size: 2rem;
-    font-weight: 500;
-    font-family: Urbanist;
-    color: white;
-    margin-left: 94px;
-  }
-  
-  .menu {
-    font-family: Urbanist;
-    color: white;
-    margin-right: 94px;
-  }
-  
+  background-color: black;
+  padding-right: 188px;
+  padding-left: 188px;
+  padding-top: 100px;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
+  font-weight: 500;
+  font-family: Urbanist;
+  color: white;
+  margin-left: 94px;
+}
+
+.menu {
+  font-family: Urbanist;
+  color: white;
+  margin-right: 94px;
+}
