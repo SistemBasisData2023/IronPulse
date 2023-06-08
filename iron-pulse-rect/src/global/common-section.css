@@ -1,0 +1,17 @@
+.common_section{
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('/Users/rijal/Documents/SBD-FINPRO/Proyek-Akhir-SBD/iron-pulse-rect/public/bg-image1@2x.png') no-repeat center center;
+    background-size: cover;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.common_section h1{
+    font-size: 4rem;
+    font-family: 'urbanist';
+    font-weight:500;
+    color: #fff;
+}
