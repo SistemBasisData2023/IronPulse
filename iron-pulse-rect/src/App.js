@@ -55,9 +55,9 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/register-page" element={<RegisterPage />} />
-      <Route path="/home" element={<HomePageUser />} />
+      <Route path="/" element={<HomePageUser />} />
       <Route path="/workout" element={<WorkoutSelect />} />
       <Route path="/bookings" element={<Bookings />} />
       <Route path="/personal-trainers" element={<PersonalTrainers />} />

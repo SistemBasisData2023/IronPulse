@@ -9,15 +9,6 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const { hash } = require('bcrypt');
 
-
-const cors = require('cors');
-const corsOptions ={
-    origin:'http://localhost:3000', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
-
 //////////////////////////////////////////// koneksi db neon ////////////////////////////////////////////
 const db = new Client({
     host    : 'ep-polished-water-013849.ap-southeast-1.aws.neon.tech',
@@ -40,11 +31,18 @@ db.connect((err)=>{
 
 app.use(
     session({
-        secret: 'secret',
+        secret: 'secret-key',
         saveUninitialized: false,
         resave: false
     })
 );
+
+//test session
+app.get('/session', (req, res) => {
+  const userId = req.session.user_id;
+  const sessionData = req.session;
+  res.json(sessionData);
+});
 
 //////////////////////////////////////////// account ////////////////////////////////////////////
 
@@ -68,7 +66,6 @@ app.get('/check_all_account', (req, res) => {
 
 app.post('/register', (req, res) => {
   temp = req.session;
-
   temp.name = req.body.name;
   temp.email = req.body.email;
   temp.pass = req.body.pass;
@@ -105,7 +102,6 @@ app.post('/register', (req, res) => {
     });
   } else {
     res.end('empty');
-    console.log("kosong")
   }
 });
 
@@ -113,14 +109,12 @@ app.post('/register', (req, res) => {
 ///berhasil login admin
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.post('/login_admin', async (req, res) => {
-  temp = req.session;
+  const temp = req.session;
   temp.email = req.body.email;
   temp.pass = req.body.pass;
-  // const email = req.body.email;
-  // const password = req.body.pass;
 
   if (temp.email !== undefined && temp.pass !== undefined) {
-    const query = `SELECT email, pass,admin_priv  FROM account WHERE email = '${temp.email}';`;
+    const query = `SELECT user_id,email, pass,admin_priv FROM account WHERE email = '${temp.email}';`;
 
     db.query(query, (err, results) => {
       if (err) {
@@ -133,6 +127,7 @@ app.post('/login_admin', async (req, res) => {
       } else {
         const storedPassword = results.rows[0].pass;
         const adminPriv  = results.rows[0].admin_priv || false;
+        const userId = results.rows[0].user_id; // Menyimpan user_id dari hasil query
 
         bcrypt.compare(temp.pass, storedPassword, (err, result) => {
           if (err) {
@@ -142,6 +137,8 @@ app.post('/login_admin', async (req, res) => {
 
           if (result) {
             if (adminPriv == true) {
+              temp.user_id = userId;
+
               res.status(200).json({
                 message: 'Login successful (Admin)'
               });
@@ -167,14 +164,12 @@ app.post('/login_admin', async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post('/login_member', async (req, res) => {
-  temp = req.session;
+  const temp = req.session;
   temp.email = req.body.email;
   temp.pass = req.body.pass;
-  // const email = req.body.email;
-  // const password = req.body.pass;
 
   if (temp.email !== undefined && temp.pass !== undefined) {
-    const query = `SELECT email, pass,admin_priv  FROM account WHERE email = '${temp.email}';`;
+    const query = `SELECT user_id,email, pass, admin_priv FROM account WHERE email = '${temp.email}';`;
 
     db.query(query, (err, results) => {
       if (err) {
@@ -186,7 +181,8 @@ app.post('/login_member', async (req, res) => {
         res.status(401).send('Invalid email');
       } else {
         const storedPassword = results.rows[0].pass;
-        const adminPriv  = results.rows[0].admin_priv || false;
+        const adminPriv = results.rows[0].admin_priv || false;
+        const userId = results.rows[0].user_id; // Menyimpan user_id dari hasil query
 
         bcrypt.compare(temp.pass, storedPassword, (err, result) => {
           if (err) {
@@ -196,10 +192,11 @@ app.post('/login_member', async (req, res) => {
 
           if (result) {
             if (adminPriv == false) {
+              temp.user_id = userId;
+
               res.status(200).json({
                 message: 'Login successful (member)'
               });
-
             } else {
               res.status(401).json({
                 message: 'Invalid account'
@@ -267,7 +264,6 @@ app.delete('/delete_account',(req,res)=>{
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.put('/change_account', (req, res) => {
     temp = req.session;
-
     temp.user_id = req.body.user_id;
     temp.name = req.body.name;
     temp.email = req.body.email;
@@ -281,7 +277,6 @@ app.put('/change_account', (req, res) => {
     temp.admin_priv = req.body.admin_priv;
     temp.accountimg_url = req.body.accountimg_url;
     temp.age = req.body.age;
-
 
     db.query(`UPDATE account 
       SET user_id='${temp.user_id}',
@@ -309,7 +304,9 @@ app.put('/change_account', (req, res) => {
 
 //////////////////////////////////////////// personal trainers ////////////////////////////////////////////
 
-//1. view semua personal trainer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//view semua personal trainer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/check_all_pt', (req, res) => {
   db.query('SELECT * FROM personal_trainers', (err, ptResults) => {
     if (err) {
@@ -320,7 +317,9 @@ app.get('/check_all_pt', (req, res) => {
 })
 })
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //2. menambahkan personal trainer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.post('/insert_pt', (req, res) => {
     const { personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count} = req.body;
     db.query(`INSERT INTO personal_trainers (personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count)
@@ -334,7 +333,9 @@ app.post('/insert_pt', (req, res) => {
     res.send('Data berhasil diinput personal_trainers.');
 })
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //3. mengubah salah atribut di personal trainer
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.put('/update_pt', (req, res) => {
   const { personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count } = req.body;
   db.query(`UPDATE personal_trainers 
@@ -467,7 +468,9 @@ app.put('/update_booking', (req, res) => {
 
 ////////////////////////////////////////////      class        ////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //1. view semua class
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/check_all_class', (req, res) => {
   db.query('SELECT * FROM class', (err, classResults) => {
     if (err) {
@@ -478,7 +481,9 @@ app.get('/check_all_class', (req, res) => {
   })
 })
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //2.Memilih class
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.post('/class', async (req, res) => {
   const class_id = req.body.class_id;
 
@@ -514,8 +519,9 @@ app.post('/class', async (req, res) => {
   }
 });
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //3. menghapus class
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.delete('/delete_class',(req,res)=>{
 
   const { class_id } = req.body;
@@ -529,12 +535,15 @@ app.delete('/delete_class',(req,res)=>{
   })
 })
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //4. mengubah salah atribut di class
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////      ratings      ////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //1. menambahkan ratings
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.post('/insert_ratings', (req, res) => {
     const {rating_id,personal_trainer_id, user_id, rating,comment} = req.body;
     db.query(`INSERT INTO ratings (rating_id,personal_trainer_id, user_id, rating,comment)
@@ -548,7 +557,9 @@ app.post('/insert_ratings', (req, res) => {
     res.send('Data berhasil diinput ke table ratings.');
 })
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //2. mengubah ratings
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.put('/update_ratings', (req, res) => {
   const { rating_id,personal_trainer_id, user_id,rating,comment} = req.body;
   db.query(`UPDATE ratings SET rating_id='${rating_id}',
@@ -565,8 +576,9 @@ app.put('/update_ratings', (req, res) => {
   })
 })
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //3. menghapus ratings 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.delete('/delete_ratings',(req,res)=>{
 
   const { rating_id } = req.body;
@@ -580,7 +592,9 @@ app.delete('/delete_ratings',(req,res)=>{
   })
 })
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //4. Melihat semua rating
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/check_all_ratings', (req, res) => {
   db.query('SELECT * FROM ratings', (err, ratingsResults) => {
     if (err) {
@@ -593,7 +607,7 @@ app.get('/check_all_ratings', (req, res) => {
 
 ////////////////////////////////////////////      port server   ////////////////////////////////////////////
 
-app.listen(3200,()=>{
-    console.log('Server berjalan pada port 3200')
+app.listen(3300,()=>{
+    console.log('Server berjalan pada port 3300')
 })
 
