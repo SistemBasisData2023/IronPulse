@@ -1,12 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+
 
 const Card = ({ title, description, buttonText }) => {
+  const [workoutData, setWorkoutData] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleButtonClick = () => {
-    navigate("/workout");
+  const handleButtonClick = async () => {
+    console.log("data" + title);
+    try {
+      const response = await axios.get("http://localhost:3300/classtype", {
+        params: {
+          workout: title,
+        },
+      });
+      
+
+      const data = response.data.classes;
+      setWorkoutData(data);
+      console.log(data);
+
+      navigate("/workout", { state: { workoutData: data } });
+    } catch (error) {
+      console.log(error);
+    }
   };
+
 
   return (
     <div className="card w-96 bg-white shadow-xl text-base-content font-urbanist max-h-96">

@@ -2,16 +2,37 @@ import React, { useState } from "react";
 import "./card.css";
 import { Container, Row, Col } from "reactstrap";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
-import Rating from "./rating";
+
 import Button from "@mui/material/Button";
 
-const CardReview = ({ pt }) => {
-  const { id, name, age, gender, avgRating } = pt;
+const CardPT = ({ pt }) => {
+  const { personal_trainer_id, name, age, gender, avgRating } = pt;
   const [currentRating, setCurrentRating] = useState(avgRating || 0);
+  const [ratingData, setRatingData] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const handleRate = (newRating) => {
-    setCurrentRating(newRating);
+  const handleRate = async () => {
+    console.log("data" + personal_trainer_id);
+    try {
+      const response = await axios.get("http://localhost:3300/getrating", {
+        params: {
+          personal_trainer_id: personal_trainer_id,
+        },
+      });
+  
+      const data = response.data.ratings;
+      setRatingData(data);
+      console.log(data);
+  
+      navigate("/ratings", { state: { ratingData: data } });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -23,19 +44,15 @@ const CardReview = ({ pt }) => {
         <div className="card-info">
           <h1 className="card-title -mb-2">{name}</h1>
           <h3>
-            Age: <span>{age}</span>
-          </h3>
-          <h3>
             Gender: <span>{gender}</span>
           </h3>
         </div>
         <div className="card-rating">
           <div className="rating-container">
-            <Link to="/ratings">
               <Button variant="contained" onClick={() => handleRate(0)}>
                 Rating : <span>{avgRating}</span>
               </Button>
-            </Link>
+      
           </div>
         </div>
       </div>
@@ -43,4 +60,4 @@ const CardReview = ({ pt }) => {
   );
 };
 
-export default CardReview;
+export default CardPT;

@@ -6,15 +6,24 @@ import Card from "../shared/card.js";
 import { Container } from "reactstrap";
 import gymData from "../assets/data/gym.js";
 import "./workout-select.css";
+import { useLocation } from "react-router-dom";
+
+
+let workoutName = null;
 
 const WorkoutSelect = () => {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
+  const location = useLocation();
+  const workoutData = location.state?.workoutData || [];
+  console.log(workoutData)
+  console.log(gymData)
+
 
   useEffect(() => {
-    const pages = Math.ceil(gymData.length / 9); // cards per page
+    const pages = Math.ceil(workoutData.length / 9); // cards per page
     setPageCount(pages);
-  }, [gymData]);
+  }, [workoutData]);
 
   return (
     <>
@@ -22,7 +31,7 @@ const WorkoutSelect = () => {
       <CoverImage title={"Workout"} />
       <section className="bg-white h-screen">
         <Container className="card-container">
-          {gymData.slice(page * 9, (page + 1) * 9).map((gym) => (
+          {workoutData.slice(page * 9, (page + 1) * 9).map((gym) => (
             <Card gym={gym} key={gym.id} />
           ))}
         </Container>

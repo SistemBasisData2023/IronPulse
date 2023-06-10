@@ -23,27 +23,27 @@ const HomePage1 = () => {
         <section className="h-screen flex flex-wrap justify-center gap-8 mt-8">
           {/* Render multiple card components */}
           <Card
-            title="Shoes!"
+            title="Muay Thai"
             description="If a dog chews shoes, whose shoes does he choose?"
           />
           <Card
-            title="Shoes!"
+            title="Yoga"
             description="If a dog chews shoes, whose shoes does he choose?"
           />
           <Card
-            title="Shoes!"
+            title="HIIT"
             description="If a dog chews shoes, whose shoes does he choose?"
           />
           <Card
-            title="Shoes!"
+            title="Zumba"
             description="If a dog chews shoes, whose shoes does he choose?"
           />
           <Card
-            title="Shoes!"
+            title="Pilates"
             description="If a dog chews shoes, whose shoes does he choose?"
           />
           <Card
-            title="Shoes!"
+            title="Poundfit"
             description="If a dog chews shoes, whose shoes does he choose?"
           />
         </section>
