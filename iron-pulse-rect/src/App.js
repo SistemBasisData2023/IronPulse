@@ -20,6 +20,7 @@ function App() {
   const action = useNavigationType();
   const location = useLocation();
   const pathname = location.pathname;
+  //const session = require("express-session");
 
   useEffect(() => {
     if (action !== "POP") {

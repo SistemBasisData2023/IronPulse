@@ -11,6 +11,10 @@ const { hash } = require('bcrypt');
 require('dotenv').config();
 
 
+const cors = require("cors");
+app.use(cors());
+
+
 //////////////////////////////////////////// koneksi db neon ////////////////////////////////////////////
 const db = new Client({
   host: process.env.DB_HOST,
@@ -33,9 +37,13 @@ db.connect((err)=>{
 
 app.use(
     session({
-        secret: 'secret-key',
+        secret: process.env.SESSION_SECRET,
         saveUninitialized: false,
-        resave: false
+        resave: false,
+        cookie: {
+          httpOnly: true,
+          maxAge: 3600000
+        }
     })
 );
 
@@ -195,9 +203,11 @@ app.post('/login_member', async (req, res) => {
           if (result) {
             if (adminPriv == false) {
               temp.user_id = userId;
-
+              req.session.user_id = userId; // Save the user_id in the session
               res.status(200).json({
-                message: 'Login successful (member)'
+                message: 'Login successful (member)',
+                user_id: req.session.user_id
+                
               });
             } else {
               res.status(401).json({

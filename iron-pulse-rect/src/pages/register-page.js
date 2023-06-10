@@ -18,7 +18,6 @@ const RegisterPage = () => {
   const [gender, setGender] = React.useState("Female");
   const [email, setEmail] = React.useState(null);
   const [pass, setPass] = React.useState(null);
-  const [confirmpass, setConfirmPass] = React.useState(null);
   const [height, setHeight] = React.useState(null);
   const [weight, setWeight] = React.useState(null);
   const [phone, setPhone] = React.useState(null);
@@ -43,7 +42,7 @@ const RegisterPage = () => {
       height: height,
       bmi: weight / ((height / 100) * (height / 100)), // Calculate BMI based on weight and height
       gender: gender,
-      admin_priv: "True", // Set the admin privilege value here if needed
+      admin_priv: "False", // Set the admin privilege value here if needed
       accountimg_url: "kuda", // Set the account image URL here if needed
       age: new Date().getFullYear() - new Date(bday).getFullYear(), // Calculate age based on birthdate
     };
@@ -69,8 +68,9 @@ const RegisterPage = () => {
     const formData = qs.stringify(data);
 
     axios
-      .post("http://localhost:3200/register", formData, config)
+      .post("http://localhost:3300/register", formData, config)
       .then((response) => {
+        console.log(localStorage);
         // Handle the response from the backend
         console.log(response.data); // You can customize this based on your requirements
       })
