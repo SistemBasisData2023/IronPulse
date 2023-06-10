@@ -12,7 +12,7 @@ const WorkoutSelect = () => {
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    const pages = Math.ceil(gymData.length / 2); // cards per page
+    const pages = Math.ceil(gymData.length / 9); // cards per page
     setPageCount(pages);
   }, [gymData]);
 
@@ -22,7 +22,7 @@ const WorkoutSelect = () => {
       <CoverImage title={"Workout"} />
       <section className="bg-white h-screen">
         <Container className="card-container">
-          {gymData.slice(page * 2, (page + 1) * 2).map((gym) => (
+          {gymData.slice(page * 9, (page + 1) * 9).map((gym) => (
             <Card gym={gym} key={gym.id} />
           ))}
         </Container>
