@@ -11,6 +11,9 @@ import WorkoutSelect from "./pages/workout-select.js";
 import Bookings from "./pages/bookings";
 import PersonalTrainers from "./pages/personal-trainer.js";
 import Ratings from "./pages/ratings.js";
+import AdminHome from "./pages/admin-home"
+import PTManager from "./pages/pt-manager"
+import ClassManager from "./pages/classs-manager"
 import { useEffect } from "react";
 
 function App() {
@@ -62,6 +65,10 @@ function App() {
       <Route path="/bookings" element={<Bookings />} />
       <Route path="/personal-trainers" element={<PersonalTrainers />} />
       <Route path="/ratings" element={<Ratings />} />
+      <Route path="/admin" element={<AdminHome />} />
+      <Route path='/admin/pt-manager' element={<PTManager/>} />
+      <Route path='/admin/class-manager' element={<ClassManager/>} />
+
     </Routes>
 
     //test using tailwind

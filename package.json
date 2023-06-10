@@ -14,11 +14,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "bootstrap": "^5.3.0",
-<<<<<<< HEAD
     "connect-pg-simple": "^9.0.0",
-=======
-    "cors": "^2.8.5",
->>>>>>> 93d84f8511f25080dd247822f4b720f5cb6918e7
     "daisyui": "^3.0.0",
     "express": "^4.18.2",
     "express-session": "^1.17.3",

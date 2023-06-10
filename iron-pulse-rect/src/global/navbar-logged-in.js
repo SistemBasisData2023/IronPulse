@@ -10,7 +10,7 @@ function NavbarLoggedin() {
           <a
             className="btn-logo btn-ghost normal-case"
             style={{ fontSize: "50px" }}
-          >
+            href="/">
             IronPulse
           </a>
         </ul>
@@ -25,6 +25,11 @@ function NavbarLoggedin() {
           <li>
             <Link to="/personal-trainers" style={{ fontSize: "1.1rem" }}>
               Personal Trainers
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin" style={{ fontSize: "1.1rem" }}>
+              TEST ADMIN 
             </Link>
           </li>
         </ul>
