@@ -1,4 +1,2 @@
-# Proyek-Akhir-SBD
-
-
-<iframe width="560" height="315" src='https://dbdiagram.io/embed/64721d507764f72fcff37f60'> </iframe>
+**Iron Pulse Fitness**
+Iron Pulse fitness merupakan sebuah implementasi dari sistem membership gym yang akan dikembangkan dalam suatu web.Komponen Iron Pulse fitness terdiri dari customer,course,dan admin yang dimana customer dapat melakukan booking terhadapat suatu course dimana dalam suatu course memiliki beberapa jadwal dalam satu hari dimana setiap jadwal diisi oleh personal trainer yang berbeda-beda masing-masing personal trainer beberapa komponent sebagai berikut nama,umur,rating,dan gender.Sedangkan customer memiliki komponent nama,email,no telp,berat,tinggi badan.Untuk komponent course adalah durasi,level,calorie burn,workout type,Nama Personal trainer,dan kuota.
