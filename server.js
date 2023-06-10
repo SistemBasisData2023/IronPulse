@@ -8,17 +8,19 @@ app.use(bp.urlencoded({extended:true}))
 const session = require('express-session'); 
 const bcrypt = require('bcrypt');
 const { hash } = require('bcrypt');
+require('dotenv').config();
+
 
 //////////////////////////////////////////// koneksi db neon ////////////////////////////////////////////
 const db = new Client({
-    host    : 'ep-polished-water-013849.ap-southeast-1.aws.neon.tech',
-    database: 'Iron_pulse_fitness',
-    user    : 'mohammadvarrel23',
-    password: 'n2GKNID3iWsS',
-    port    : 5432,
-    sslmode : 'require',
-    ssl     : true
-})
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  sslmode: process.env.DB_SSLMODE,
+  ssl: process.env.DB_SSL === 'true',
+});
 
 
 db.connect((err)=>{
