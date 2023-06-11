@@ -16,19 +16,19 @@ const WorkoutSelect = () => {
   const [page, setPage] = useState(0);
   const location = useLocation();
   const workoutData = location.state?.workoutData || [];
-  console.log(workoutData)
-  console.log(gymData)
+  console.log(workoutData) // Menampilkan workoutData pada konsol
+  console.log(gymData) // Menampilkan gymData pada konsol
 
 
   useEffect(() => {
     const pages = Math.ceil(workoutData.length / 9); // cards per page
-    setPageCount(pages);
+    setPageCount(pages);  // Mengatur jumlah halaman ke variabel state pageCount
   }, [workoutData]);
 
   return (
     <>
-      <Navbar />
-      <CoverImage title={"Workout"} />
+      <Navbar /> {/* Menampilkan komponen CoverImage dengan judul "Workout" */}
+      <CoverImage title={"Workout"} /> 
       <section className="bg-white h-screen">
         <Container className="card-container">
           {workoutData.slice(page * 9, (page + 1) * 9).map((gym) => (
@@ -36,6 +36,7 @@ const WorkoutSelect = () => {
           ))}
         </Container>
         <Container>
+          {/* Menampilkan navigasi halaman (pagination) */}
           <div className="pagination d-flex align-items-center justify-content-center mt-4">
             {[...Array(pageCount).keys()].map((number) => (
               <span
