@@ -253,12 +253,12 @@ app.post("/login_member", async (req, res) => {
                 message: "Login successful (member)",
                 user_id: req.session.user_id,
               });
-            } else {
+            } else { //error handling untuk account yang salah
               res.status(401).json({
                 message: "Invalid account",
               });
             }
-          } else {
+          } else { //error handling untuk invalid password
             res.status(401).send("Invalid password");
           }
         });
@@ -278,12 +278,14 @@ app.get("/check_account", (req, res) => {
   const temp = req.session;
   temp.email = req.query.email ?? ""; // Mengambil email dari query parameter
 
-  if (temp.email.length === 0) {
-    res.status(400).json({ message: "Email is required" });
-    return;
-  }
+if (temp.email.length === 0) {
+  // Memeriksa apakah panjang string email adalah 0
+  res.status(400).json({ message: "Email is required" });
+  return; // Menghentikan eksekusi kode lebih lanjut
+}
 
-  const query = `SELECT * FROM account WHERE email = '${temp.email}';`;
+
+  const query = `SELECT * FROM account WHERE email = '${temp.email}';`; //query untuk menampilkan account berdasarkan email
   db.query(query, (err, results) => {
     if (err) {
       console.log(err);
@@ -359,7 +361,7 @@ app.put("/change_account", (req, res) => {
     accountimg_url='${temp.accountimg_url}',
     age ='${temp.age}' WHERE user_id=${temp.user_id};`,
     (err) => {
-      if (err) {
+      if (err) { //error handling
         console.log(err);
         res.send(`Data dengan email ${temp.email} gagal diupdate`);
         return;
@@ -856,7 +858,7 @@ app.put("/update_ratings", (req, res) => {
 //3. menghapus ratings
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.delete("/delete_ratings", (req, res) => {
+app.delete("/delete_ratings", (req, res) => { //menghapus rating berdasarkan rating_id
   const { rating_id } = req.body;
   db.query(`DELETE FROM ratings WHERE rating_id = ${rating_id}; `, (err) => {
     if (err) {
@@ -873,7 +875,7 @@ app.delete("/delete_ratings", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("/check_all_ratings", (req, res) => {
-  db.query("SELECT * FROM ratings", (err, ratingsResults) => {
+  db.query("SELECT * FROM ratings", (err, ratingsResults) => { //mengecek semua atribut pada rating
     if (err) {
       console.log(err);
       return;
