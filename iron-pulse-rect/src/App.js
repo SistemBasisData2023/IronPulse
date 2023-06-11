@@ -20,12 +20,15 @@ import { useEffect } from "react";
 import LocalStorageChecker from "./shared/sessionCheck";
 
 function App() {
+  // Menggunakan hook useNavigationType untuk mendapatkan tipe navigasi
   const action = useNavigationType();
+  
+  // Menggunakan hook useLocation untuk mendapatkan lokasi saat ini
   const location = useLocation();
   const pathname = location.pathname;
-  //const session = require("express-session");
 
   useEffect(() => {
+    // Menggunakan useEffect untuk melakukan scroll ke atas saat navigasi bukan merupakan tipe "POP"
     if (action !== "POP") {
       window.scrollTo(0, 0);
     }
@@ -35,6 +38,7 @@ function App() {
     let title = "";
     let metaDescription = "";
 
+    // Menggunakan useEffect untuk mengubah judul dokumen dan meta deskripsi sesuai dengan lokasi saat ini
     switch (pathname) {
       case "/":
         title = "";
@@ -44,6 +48,7 @@ function App() {
         title = "";
         metaDescription = "";
         break;
+      // Tambahkan kasus lainnya sesuai dengan kebutuhan Anda
     }
 
     if (title) {
@@ -62,8 +67,10 @@ function App() {
 
   return (
     <React.Fragment>
+      {/* Komponen LocalStorageChecker digunakan di dalam aplikasi */}
       <LocalStorageChecker />
       <Routes>
+        {/* Mendefinisikan rute-rute aplikasi */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register-page" element={<RegisterPage />} />
         <Route path="/home" element={<HomePageUser />} />
@@ -75,12 +82,14 @@ function App() {
         <Route path="/admin/pt-manager" element={<PTManager />} />
         <Route path="/admin/class-manager" element={<ClassManager />} />
       </Routes>
-      </React.Fragment>
+    </React.Fragment>
 
     //test using tailwind
     //   <h1 className="text-3xl font-bold underline">
     //   Hello world!
     // </h1>
+
   );
 }
+
 export default App;
