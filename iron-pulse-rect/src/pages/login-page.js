@@ -50,12 +50,19 @@ const LoginPage = () => {
         const responseData = response.data;
     console.log(responseData); // You can customize this based on your requirements
 
-    const { user_id, message } = responseData;
+    const { user_id, message, admin_priv } = responseData;
     console.log("User ID:", user_id);
     console.log("Message:", message);
     localStorage.setItem("user_id", user_id);
     console.log(localStorage);
-    navigate("/home");
+
+    if (admin_priv == t){
+      navigate("/admin")
+    }else{
+      navigate("/home")
+    }
+    
+  
 
         
 

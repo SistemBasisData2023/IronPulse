@@ -16,6 +16,8 @@ import {
   Modal,
   TextField,
   Box,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
 import axios from "axios"; // Import Axios library
@@ -28,11 +30,12 @@ const PtMgr = () => {
   const [editedPtData, setEditedPtData] = useState({ name: "", gender: "" });
   const [ptData, setPtData] = useState([]); // State to store the personal trainers' data
 
-  const pageItemCount = 9;
+  const pageItemCount = 1000000;
 
   useEffect(() => {
     // Make the API request to retrieve personal trainers' data
-    axios.get("http://localhost:3300/check_all_pt")
+    axios
+      .get("http://localhost:3300/check_all_pt")
       .then((response) => {
         setPtData(response.data.personal_trainers);
         console.log(response.data);
@@ -50,7 +53,17 @@ const PtMgr = () => {
 
   const handleDelete = (row) => {
     // Handle delete functionality
-    console.log("Delete row:", row);
+    axios
+    .delete("http://localhost:3300/delete_pt", { data: { personal_trainer_id: row.personal_trainer_id } })
+    .then((response) => {
+      console.log(response.data);
+      // Update the ptData state by filtering out the deleted row
+      setPtData((prevData) => prevData.filter((pt) => pt.personal_trainer_id !== row.personal_trainer_id));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
   };
 
   const handleAdd = () => {
@@ -65,10 +78,55 @@ const PtMgr = () => {
   };
 
   const handleModalSubmit = () => {
-    // Validate and submit edited data
-    console.log("Edited PT data:", editedPtData);
-    setModalOpen(false);
-    setEditedPtData({ name: "", gender: "" });
+    if (selectedRow === null) {
+      // Add operation
+      axios
+        .post("http://localhost:3300/insert_pt", {
+          name: editedPtData.name,
+          gender: editedPtData.gender,
+        })
+        .then((response) => {
+          console.log(response.data);
+          // Update the ptData state with the new data from the server
+          setPtData((prevData) => [...prevData, response.data]);
+          setModalOpen(false);
+          setEditedPtData({ name: "", gender: "" });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      // Edit operation
+      const { personal_trainer_id, name, gender } = selectedRow;
+      axios
+        .put("http://localhost:3300/update_pt", {
+          personal_trainer_id: personal_trainer_id,
+          name: editedPtData.name,
+          gender: editedPtData.gender,
+        })
+        .then((response) => {
+          console.log (personal_trainer_id)
+          console.log(response.data);
+          // Update the ptData state with the updated data from the server
+          const updatedPtData = ptData.map((row) => {
+            if (row.personal_trainer_id === personal_trainer_id) {
+              return {
+                ...row,
+                name: editedPtData.name,
+                gender: editedPtData.gender,
+              };
+            }
+            return row;
+          });
+  
+          setPtData(updatedPtData);
+          setModalOpen(false);
+          setEditedPtData({ name: "", gender: "" });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const handleInputChange = (event) => {
@@ -83,7 +141,7 @@ const PtMgr = () => {
     <>
       <Navbar />
       <CoverImage title={"PT Manager"} />
-      <Container className="bg-white w-screen">
+      <Container className="bg-white w-screen h-flex">
         <Table>
           <TableHead>
             <TableRow>
@@ -148,13 +206,16 @@ const PtMgr = () => {
             onChange={handleInputChange}
             margin="normal"
           />
-          <TextField
+          <Select
             label="Gender"
             name="gender"
             value={editedPtData.gender}
             onChange={handleInputChange}
             margin="normal"
-          />
+          >
+            <MenuItem value="Male">Male</MenuItem>
+            <MenuItem value="Female">Female</MenuItem>
+          </Select>
           <Button onClick={handleModalSubmit}>Submit</Button>
         </Box>
       </Modal>

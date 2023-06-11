@@ -359,8 +359,8 @@ app.post("/insert_pt", (req, res) => {
     rate_count,
   } = req.body;
   db.query(
-    `INSERT INTO personal_trainers (personal_trainer_id,name, gender, accountimg_url,rating_sum,rate_count)
-      VALUES ('${personal_trainer_id}','${name}', '${gender}', '${accountimg_url}','${rating_sum}','${rate_count}');`,
+    `INSERT INTO personal_trainers (name, gender)
+      VALUES ('${name}', '${gender}');`,
     (err) => {
       if (err) {
         console.log(err);
@@ -377,21 +377,15 @@ app.post("/insert_pt", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.put("/update_pt", (req, res) => {
   const {
-    personal_trainer_id,
     name,
     gender,
-    accountimg_url,
-    rating_sum,
-    rate_count,
+    personal_trainer_id
   } = req.body;
+
+  console.log(req.body)
   db.query(
     `UPDATE personal_trainers 
-            SET personal_trainer_id='${personal_trainer_id}',
-            name='${name}',
-            gender='${gender}', 
-            accountimg_url='${accountimg_url}',
-            rating_sum='${rating_sum}', 
-            rate_count='${rate_count}' WHERE personal_trainer_id=${personal_trainer_id};`,
+    SET name='${name}', gender='${gender}' WHERE personal_trainer_id=${personal_trainer_id};`,
     (err) => {
       if (err) {
         console.log(err);
@@ -406,6 +400,25 @@ app.put("/update_pt", (req, res) => {
     }
   );
 });
+
+
+app.delete("/delete_pt", (req, res) => {
+  const { personal_trainer_id } = req.body;
+  console.log(req.body)
+
+  db.query(
+    `DELETE FROM personal_trainers WHERE personal_trainer_id = ${personal_trainer_id};`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(`Error deleting personal trainer with ID ${personal_trainer_id}`);
+        return;
+      }
+      res.send(`Personal trainer with ID ${personal_trainer_id} has been deleted`);
+    }
+  );
+});
+
 
 ////////////////////////////////////////////      bookings      ////////////////////////////////////////////
 
@@ -607,6 +620,44 @@ app.post("/class", async (req, res) => {
     res.status(400).send("Invalid request");
   }
 });
+
+app.post("/add_class", async (req, res) => {
+  const {
+    personal_trainer_id,
+    difficulty,
+    calorie,
+    workout,
+    capacity,
+    class_date,
+    start_time,
+    end_time
+  } = req.body;
+
+  if (personal_trainer_id && difficulty && calorie && workout && capacity && class_date && start_time && end_time) {
+    const query = `
+    INSERT INTO class (personal_trainer_id, difficulty, calorie, workout, pt_name, capacity, class_date, start_time, end_time)
+    SELECT '${personal_trainer_id}', '${difficulty}', '${calorie}', '${workout}', name, '${capacity}', '${class_date}', '${start_time}', '${end_time}'
+    FROM personal_trainers
+    WHERE personal_trainer_id = '${personal_trainer_id}'
+    RETURNING pt_name;
+    `;
+
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send("Internal Server Error" + err);
+        console.log(err)
+        return;
+      }
+
+      const pt_name = results.rows[0].name;
+      res.status(200).json({ message: "Class added successfully", pt_name });
+    });
+  } else {
+    res.status(400).send("Invalid request");
+  }
+});
+
+
 
 app.get("/classtype", async (req, res) => {
   const workoutType = req.query.workout;
