@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../global/navbar-logged-in.js";
 import CoverImage from "../global/common-section.js";
-import Card from "../shared/card.js";
+import Card from "../shared/cardWorkout.js";
 import { Container } from "reactstrap";
 import gymData from "../assets/data/gym.js";
 import "./workout-select.css";

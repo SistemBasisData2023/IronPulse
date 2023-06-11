@@ -4,18 +4,38 @@ import Navbar from "../global/navbar-logged-in.js";
 import CoverImage from "../global/common-section.js";
 import Card from "../shared/cardBooking.js";
 import { Container } from "reactstrap";
-import bookingData from "../assets/data/bookings.js";
+import axios from "axios";
 import "./workout-select.css";
 
 const Bookings = () => {
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
   const pageItemCount = 9;
+  const [bookingData, setBookingData] = useState([]);
+  const userId = localStorage.getItem("user_id");
+  console.log(userId);
 
   useEffect(() => {
-    const pages = Math.ceil(bookingData.length / pageItemCount); // cards per page
-    setPageCount(pages);
-  }, [bookingData]);
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3300/check_booking", {
+        params: {
+          user_id: userId, // Pass the user ID parameter
+        },
+      });
+      console.log(response.data.bookings);
+      const bookings = response.data.bookings;
+  
+      setBookingData(bookings);
+      const pages = Math.ceil(bookings.length / pageItemCount);
+      setPageCount(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -26,7 +46,7 @@ const Bookings = () => {
           {bookingData
             .slice(page * pageItemCount, (page + 1) * pageItemCount)
             .map((bookings) => (
-              <Card bookings={bookings} key={bookings.id} />
+              <Card bookings={bookings} key={bookings.booking_id} />
             ))}
         </Container>
         <Container>

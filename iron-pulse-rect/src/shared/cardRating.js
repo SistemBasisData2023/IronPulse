@@ -1,42 +1,86 @@
 import React, { useState } from "react";
-import "./card.css";
-import { Container, Row, Col } from "reactstrap";
-import Rating from "./rating";
-import Button from "@mui/material/Button";
+import "./Rating.css"; // Import CSS file for Rating component styles
+import TextField from "@mui/material/TextField";
 
-const CardReview = ({ rate }) => {
-  const { rating_id, personal_trainer_id, user_id, rating, comment } = rate;
-  const [currentRating, setCurrentRating] = useState(rating || 0);
-
-  const handleRate = (newRating) => {
-    setCurrentRating(newRating);
-  };
+const Stars = ({ value, hoveredValue, onHover, onClick, readOnly }) => {
+  const stars = [1, 2, 3, 4, 5];
 
   return (
-    <div className="card lg:card-side bg-white shadow-xl w-flex lg:max-w-xl">
-      <figure>
-        <img src="https://picsum.photos/200" alt="Album" />
-      </figure>
-      <div className="card-body">
-        <div className="card-info">
-          <h1 className="card-title -mb-2">{user_id}</h1>
-          <h3>
-            Rating: <span>{rating}</span>
-          </h3>
-          <h3>
-            <span>{comment}</span>
-          </h3>
-        </div>
-        <div className="card-rating">
-          <div className="rating-container">
-            <Button variant="contained" onClick={() => handleRate(0)}>
-              Rate
-            </Button>
-          </div>
-        </div>
-      </div>
+    <div className="stars">
+      {stars.map((star) => (
+        <button
+          key={star}
+          className={`star ${
+            star <= (hoveredValue || value) ? "gold" : "gray"
+          }`}
+          onClick={() => onClick(star)}
+          onMouseEnter={() => onHover(star)}
+          disabled={readOnly}
+        >
+          ★
+        </button>
+      ))}
     </div>
   );
 };
 
-export default CardReview;
+const TextInput = ({ value, onChange, readOnly }) => {
+  return (
+    <div className="text-input">
+      <TextField
+        label="Enter your rating text"
+        value={value}
+        onChange={onChange}
+        fullWidth
+        disabled={readOnly}
+      />
+    </div>
+  );
+};
+
+const Rating = ({ value, onRate }) => {
+  const [hoveredValue, setHoveredValue] = useState(0);
+  const [ratingText, setRatingText] = useState("");
+
+  const handleMouseEnter = (star) => {
+    setHoveredValue(star);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredValue(0);
+  };
+
+  const handleClick = (star) => {
+    if (onRate) {
+      onRate(star, ratingText);
+    }
+  };
+
+  const handleTextChange = (event) => {
+    setRatingText(event.target.value);
+  };
+
+  const isRatingNull = value === null;
+  const readOnly = !isRatingNull;
+
+  return (
+    <div className="rating" onMouseLeave={handleMouseLeave}>
+      <Stars
+        value={value}
+        hoveredValue={hoveredValue}
+        onHover={handleMouseEnter}
+        onClick={handleClick}
+        readOnly={readOnly}
+      />
+      {isRatingNull && (
+        <TextInput
+          value={ratingText}
+          onChange={handleTextChange}
+          readOnly={readOnly}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Rating;
