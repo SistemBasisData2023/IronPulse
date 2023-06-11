@@ -8,13 +8,13 @@ import bookingData from "../assets/data/bookings.js";
 import "./workout-select.css";
 
 const Bookings = () => {
-  const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(0);
-  const pageItemCount = 9;
+  const [pageCount, setPageCount] = useState(0); // State to hold the number of pages
+  const [page, setPage] = useState(0); // State to hold the current page
+  const pageItemCount = 9; // Number of items per page
 
   useEffect(() => {
-    const pages = Math.ceil(bookingData.length / pageItemCount); // cards per page
-    setPageCount(pages);
+    const pages = Math.ceil(bookingData.length / pageItemCount); // Calculate the number of pages based on the total number of bookings
+    setPageCount(pages); // Update the page count state
   }, [bookingData]);
 
   return (
@@ -40,7 +40,8 @@ const Bookings = () => {
                 </a>              </div>
             </div>
           </div>
-
+          
+        /* Second Card */
           <div className="card w-96 bg-base-100 shadow-xl bg-white">
             <figure className="px-10 pt-10">
               <img
