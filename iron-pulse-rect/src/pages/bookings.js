@@ -8,15 +8,15 @@ import axios from "axios";
 import "./workout-select.css";
 
 const Bookings = () => {
-  const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(0);
-  const pageItemCount = 9;
-  const [bookingData, setBookingData] = useState([]);
-  const userId = localStorage.getItem("user_id");
+  const [pageCount, setPageCount] = useState(0); // State to hold the number of pages
+  const [page, setPage] = useState(0); // State to hold the current page
+  const pageItemCount = 9; // Number of items per page
+  const [bookingData, setBookingData] = useState([]); // State to hold the booking data
+  const userId = localStorage.getItem("user_id"); // Retrieve the user ID from local storage
   console.log(userId);
 
   useEffect(() => {
-    fetchData();
+    fetchData(); // Fetch booking data when the component mounts
   }, []);
 
   const fetchData = async () => {
@@ -29,9 +29,9 @@ const Bookings = () => {
       console.log(response.data.bookings);
       const bookings = response.data.bookings;
   
-      setBookingData(bookings);
-      const pages = Math.ceil(bookings.length / pageItemCount);
-      setPageCount(pages);
+      setBookingData(bookings); // Update the booking data state with the fetched data
+      const pages = Math.ceil(bookings.length / pageItemCount); // Calculate the number of pages based on the fetched booking data
+      setPageCount(pages); // Update the page count state
     } catch (error) {
       console.log(error);
     }
