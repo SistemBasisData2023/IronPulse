@@ -85,7 +85,9 @@ The ratings table is used to store the data of the ```ratings``` on the website.
 ```Table Relational or ERD:```
   ![ERD](https://github.com/varrel123/Proyek-Akhir-SBD/blob/f1fffbf23515ca02e517d5f107b8cc4c2e47fb25/Table%20relational.png)
 
-
+```UML:```
+  ![ERD](https://github.com/SistemBasisData2023/IronPulse/blob/646756f9b885256f35cbc75bce8b0377ada843b9/UML.jpg)
+  
 ### Flowchart View
 
 ```Flowchart```
