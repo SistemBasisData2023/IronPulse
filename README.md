@@ -1,6 +1,10 @@
+<br />
+<div align="center">
+  <h1 align="center">:mechanical_arm: Iron Pulse Fitness :mechanical_arm:</h1>
+</div>
 
 #### _Iron Pulse Fitness_
-> Iron Pulse fitness merupakan sebuah implementasi dari sistem membership gym yang akan dikembangkan dalam suatu web.Komponen Iron Pulse fitness terdiri dari customer,course,dan admin yang dimana customer dapat melakukan booking terhadapat suatu course dimana dalam suatu course memiliki beberapa jadwal dalam satu hari dimana setiap jadwal diisi oleh personal trainer yang berbeda-beda masing-masing personal trainer beberapa komponent sebagai berikut nama,umur,rating,dan gender.Sedangkan customer memiliki komponent nama,email,no telp,berat,tinggi badan.Untuk komponent course adalah durasi,level,calorie burn,workout type,Nama Personal trainer,dan kuota.
+> Iron Pulse Fitness is an implementation of a gym membership system that will be developed as a web application. The components of Iron Pulse Fitness consist of customers, courses, and admins. Customers have the ability to book a course, where each course has multiple schedules throughout the day. Each schedule is led by a different personal trainer. The personal trainer component includes their name, age, rating, and gender. On the other hand, customers have components such as name, email, phone number, weight, and height. The course component includes duration, level, calorie burn, workout type, the name of the personal trainer, and the class capacity.
 
 #### SBD Group E5:
 - Ibrahim Rijal - 2106633323
@@ -8,10 +12,10 @@
 - Najwa Fathiadisa - 2106654391
 
 #### Features
-- Login dan Register
-- Login memiliki dua tipe yaitu login admin dan login member
-- Fitur user dapat memberi rating personal trainers 
-- Password user sudah terenskripsi
+- Login and Register
+- Login has two types: admin login and member login
+- Users have the ability to rate personal trainers
+- User passwords are already encrypted.
 
 
 ## Explanation of Tables in the Program
@@ -86,7 +90,9 @@ The ratings table is used to store the data of the ```ratings``` on the website.
 ```Table Relational or ERD:```
   ![ERD](https://github.com/varrel123/Proyek-Akhir-SBD/blob/f1fffbf23515ca02e517d5f107b8cc4c2e47fb25/Table%20relational.png)
 
-
+```UML:```
+  ![ERD](https://github.com/SistemBasisData2023/IronPulse/blob/646756f9b885256f35cbc75bce8b0377ada843b9/UML.jpg)
+  
 ### Flowchart View
 
 ```Flowchart```
