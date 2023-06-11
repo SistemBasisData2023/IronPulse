@@ -7,13 +7,7 @@ import Card from "../shared/cardHome.js";
 const HomePage1 = () => {
   const navigate = useNavigate();
 
-  const onSBDGroupF6Click = useCallback(() => {
-    navigate("/personal-trainers");
-  }, [navigate]);
-
-  const onWorkoutClick = useCallback(() => {
-    navigate("/Workout");
-  }, [navigate]);
+ 
 
   return (
     <>

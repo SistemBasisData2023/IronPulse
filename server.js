@@ -423,32 +423,56 @@ app.get("/check_all_booking", (req, res) => {
   });
 });
 
+app.get("/check_booking", (req, res) => {
+  const accountId = req.query.user_id;
+  if (!accountId) {
+    res.status(400).send("Invalid request. Missing account_id parameter.");
+    return;
+  }
+
+  db.query(
+    `SELECT b.*, c.workout, c.pt_name, c.start_time, c.end_time, c.class_date, r.rating
+    FROM bookings b
+    INNER JOIN class c ON b.class_id = c.class_id
+    LEFT JOIN ratings r ON b.user_id = r.user_id AND c.personal_trainer_id = r.personal_trainer_id
+    WHERE b.user_id = ${accountId}`,
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+      
+      res.status(200).json({ bookings: results.rows });
+    }
+  );
+});
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //berhasil menambahkan values dalam bookings table
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/add_booking", (req, res) => {
-  const {
-    booking_id,
-    start_time,
-    end_time,
-    class_id,
-    user_id,
-    booking_status,
-  } = req.body;
+  const { class_id, user_id } = req.body;
+
   db.query(
-    `INSERT INTO bookings (booking_id,start_time, end_time, class_id, user_id, booking_status)
-      VALUES ('${booking_id}','${start_time}', '${end_time}', ${class_id}, ${user_id}, '${booking_status}');`,
+    `INSERT INTO bookings (class_id, user_id)
+    VALUES (${class_id}, ${user_id});`,
     (err) => {
       if (err) {
         console.log(err);
-        // res.send('Data gagal diinput ke table bookings.');
+        res.status(500).send("Failed to insert data into bookings table.");
         return;
       }
+      res.send("Data successfully inserted into bookings table.");
     }
   );
-  res.send("Data berhasil diinput ke table bookings.");
 });
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //berhasil bookings
@@ -698,7 +722,6 @@ app.get("/check_all_ratings", (req, res) => {
   });
 });
 
-
 app.get("/getrating", (req, res) => {
   const personalTrainerId = req.query.personal_trainer_id;
   console.log(personalTrainerId);
@@ -709,7 +732,7 @@ app.get("/getrating", (req, res) => {
   }
 
   db.query(
-    `SELECT * FROM ratings WHERE personal_trainer_id = ${personalTrainerId}`,
+    `SELECT ratings.*, account.name AS account_name FROM ratings INNER JOIN account ON ratings.user_id = account.user_id WHERE personal_trainer_id = ${personalTrainerId}`,
     (err, results) => {
       if (err) {
         console.log(err);
@@ -719,12 +742,15 @@ app.get("/getrating", (req, res) => {
 
       if (results.rowCount < 1) {
         res.status(404).send("No ratings found for the specified personal_trainer_id");
-      } else {
-        res.status(200).json({ ratings: results.rows });
+        return;
       }
+
+      res.status(200).json({ ratings: results.rows });
     }
   );
 });
+
+
 
 ////////////////////////////////////////////      port server   ////////////////////////////////////////////
 

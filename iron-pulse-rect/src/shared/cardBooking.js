@@ -5,8 +5,10 @@ import Rating from "./rating";
 import Button from "@mui/material/Button";
 
 const CardBooking = ({ bookings }) => {
-  const { id, workout_name, pt_name, date, time, rating } = bookings;
+  const { workout, pt_name, start_time, end_time, class_date, rating } = bookings;
   const [currentRating, setCurrentRating] = useState(rating || 0);
+  const isRatingNull = rating === null;
+  console.log(rating);
 
   const handleRate = (newRating) => {
     setCurrentRating(newRating);
@@ -19,25 +21,31 @@ const CardBooking = ({ bookings }) => {
       </figure>
       <div className="card-body">
         <div className="card-info">
-          <h1 className="card-title -mb-2">{workout_name}</h1>
+          <h1 className="card-title -mb-2">{workout}</h1>
           <h2 className="card-subtitle text-sm mb-2">{pt_name}</h2>
           <h3>
-            Date: <span>{date}</span>
+            Date: <span>{class_date}</span>
           </h3>
           <h3>
-            Time: <span>{time}</span>
+            Time: <span>{start_time}</span> - <span>{end_time}</span>
           </h3>
         </div>
         <div className="card-rating">
           <div className="rating-container">
-            <Rating
-              value={currentRating}
-              readOnly={false}
-              onRate={handleRate}
-            />
-            <Button variant="contained" onClick={() => handleRate(0)}>
-              Rate
-            </Button>
+            {isRatingNull ? (
+              <Rating
+                value={currentRating}
+                readOnly={false}
+                onRate={handleRate}
+              />
+            ) : (
+              <Rating value={currentRating} readOnly={true} />
+            )}
+            {isRatingNull && (
+              <Button variant="contained" onClick={() => handleRate(0)}>
+                Rate
+              </Button>
+            )}
           </div>
         </div>
       </div>

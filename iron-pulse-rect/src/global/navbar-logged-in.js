@@ -1,8 +1,22 @@
 import React from "react";
 import "./navbar-styles.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function NavbarLoggedin() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear the session or perform any necessary logout logic here
+    localStorage.clear();
+
+    // Redirect the user to the home page after logout
+    navigate("/login");
+  };
+
+  const handleLogLocalStorage = () => {
+    console.log(localStorage);
+  };
+
   return (
     <div className="navbar">
       <div className="navbar-start">
@@ -10,7 +24,8 @@ function NavbarLoggedin() {
           <a
             className="btn-logo btn-ghost normal-case"
             style={{ fontSize: "50px" }}
-            href="/">
+            href="/home"
+          >
             IronPulse
           </a>
         </ul>
@@ -29,9 +44,19 @@ function NavbarLoggedin() {
           </li>
           <li>
             <Link to="/admin" style={{ fontSize: "1.1rem" }}>
-              TEST ADMIN 
+              TEST ADMIN
             </Link>
           </li>
+          <li>
+            <button onClick={handleLogout} style={{ fontSize: "1.1rem" }}>
+              Logout
+            </button>
+          </li>
+          {/* <li>
+            <button onClick={handleLogLocalStorage} style={{ fontSize: "1.1rem" }}>
+              Log Local Storage
+            </button>
+          </li> */}
         </ul>
       </div>
     </div>
