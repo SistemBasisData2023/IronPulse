@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../global/navbar-logged-in.js";
 import CoverImage from "../global/common-section.js";
-import ptData from "../assets/data/pt.js";
 import "./workout-select.css";
 import PTTable from "../shared/ptTable.js";
 import {
@@ -19,6 +18,7 @@ import {
   Box,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
+import axios from "axios"; // Import Axios library
 
 const PtMgr = () => {
   const [pageCount, setPageCount] = useState(0);
@@ -26,8 +26,21 @@ const PtMgr = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [editedPtData, setEditedPtData] = useState({ name: "", gender: "" });
+  const [ptData, setPtData] = useState([]); // State to store the personal trainers' data
 
   const pageItemCount = 9;
+
+  useEffect(() => {
+    // Make the API request to retrieve personal trainers' data
+    axios.get("http://localhost:3300/check_all_pt")
+      .then((response) => {
+        setPtData(response.data.personal_trainers);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const handleEdit = (row) => {
     setSelectedRow(row);

@@ -431,7 +431,7 @@ app.get("/check_booking", (req, res) => {
   }
 
   db.query(
-    `SELECT b.*, c.workout, c.pt_name, c.start_time, c.end_time, c.class_date, r.rating
+    `SELECT b.booking_id, b.class_id, b.user_id, b.booking_status, c.workout, c.pt_name, c.start_time, c.end_time, c.class_date, c.personal_trainer_id, r.rating
     FROM bookings b
     INNER JOIN class c ON b.class_id = c.class_id
     LEFT JOIN ratings r ON b.user_id = r.user_id AND c.personal_trainer_id = r.personal_trainer_id
@@ -658,9 +658,13 @@ app.delete("/delete_class", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.post("/insert_ratings", (req, res) => {
   const { rating_id, personal_trainer_id, user_id, rating, comment } = req.body;
+
+  if(rating < 1){
+    return;
+  }
   db.query(
-    `INSERT INTO ratings (rating_id,personal_trainer_id, user_id, rating,comment)
-            VALUES (${rating_id},${personal_trainer_id}, ${user_id},${rating} ,'${comment}');`,
+    `INSERT INTO ratings (personal_trainer_id, user_id, rating,comment)
+            VALUES (${personal_trainer_id}, ${user_id},${rating} ,'${comment}');`,
     (err) => {
       if (err) {
         console.log(err);
@@ -677,6 +681,7 @@ app.post("/insert_ratings", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.put("/update_ratings", (req, res) => {
   const { rating_id, personal_trainer_id, user_id, rating, comment } = req.body;
+ 
   db.query(
     `UPDATE ratings SET rating_id='${rating_id}',
             personal_trainer_id='${personal_trainer_id}',
