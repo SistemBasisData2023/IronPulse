@@ -36,7 +36,8 @@ const classMgr = () => {
   useEffect(() => {
     fetchClassData();
   }, []);
-
+  
+  // Fetch class data from the server
   const fetchClassData = async () => {
     try {
       const response = await axios.get("http://localhost:3300/check_all_class");
@@ -47,7 +48,8 @@ const classMgr = () => {
       console.error(error);
     }
   };
-
+  
+  // Handle edit button click
   const handleEdit = (row) => {
     setSelectedRow(row);
     setWorkoutType(row.workoutType);
@@ -59,7 +61,9 @@ const classMgr = () => {
     setDifficulty(row.difficulty);
     setEditModalOpen(true);
   };
-
+  
+  
+  // Handle delete button click
   const handleDelete = (row) => {
     axios
       .delete("http://localhost:3300/delete_class", { data: { class_id: row.id } })
@@ -73,11 +77,12 @@ const classMgr = () => {
       });
   };
   
-
+  // Handle add button click
   const handleAdd = () => {
     setModalOpen(true);
   };
 
+  // Handle close of the add data modal
   const handleModalClose = () => {
     setModalOpen(false);
     setWorkoutType("");
@@ -89,6 +94,7 @@ const classMgr = () => {
     setDifficulty("");
   };
 
+  // Handle close of the edit data modal
   const handleEditModalClose = () => {
     setEditModalOpen(false);
     setSelectedRow(null);
@@ -100,7 +106,8 @@ const classMgr = () => {
     setCalories("");
     setDifficulty("");
   };
-
+  
+  // Handle submission of the add data modal
   const handleModalSubmit = async () => {
     try {
       const response = await axios.post("http://localhost:3300/add_class", {
@@ -130,7 +137,7 @@ const classMgr = () => {
     }
   };
   
-
+  // Handle submission of the edit data modal
   const handleEditModalSubmit = () => {
     // Handle modal submit functionality for editing existing data
     console.log("Submit edit modal data");
